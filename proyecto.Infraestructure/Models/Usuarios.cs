@@ -23,6 +23,8 @@ public partial class Usuarios
 
     public DateTime? FechaRegistro { get; set; }
 
+    public bool Notificado { get; set; }
+
     public virtual ICollection<Cartas> Cartas { get; set; } = new List<Cartas>();
 
     public virtual EstadosUsuario EstadoUsuario { get; set; } = null!;

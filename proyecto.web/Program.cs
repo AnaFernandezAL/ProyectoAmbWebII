@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using proyecto.Application.Profiles;
 using proyecto.Application.Services.Implementations;
 using proyecto.Application.Services.Interfaces;
@@ -52,9 +53,13 @@ builder.Host.UseSerilog(Log.Logger);
 
 // *** Repositories
 builder.Services.AddTransient<IRepositoryUsuario, RepositoryUsuario>();
+builder.Services.AddTransient<IRepositorySubasta, RepositorySubasta>();
+builder.Services.AddTransient<IRepositoryCarta, RepositoryCarta>();
 
 // *** Services
 builder.Services.AddTransient<IServiceUsuario, ServiceUsuario>();
+builder.Services.AddTransient<IServiceSubasta, ServiceSubasta>();
+builder.Services.AddTransient<IServiceCarta, ServiceCarta>();
 
 // =======================
 // Configurar AutoMapper
@@ -62,6 +67,14 @@ builder.Services.AddTransient<IServiceUsuario, ServiceUsuario>();
 builder.Services.AddAutoMapper(config =>
 {
     config.AddProfile<UsuarioProfile>();
+    config.AddProfile<SubastaProfile>();
+    config.AddProfile<EstadoUsuarioProfile>();
+    config.AddProfile<RolProfile>();
+    config.AddProfile<CategoriaProfile>();
+    config.AddProfile<CartaProfile>();
+    config.AddProfile<ImagenCartaProfile>();
+    config.AddProfile<EstadoCartaProfile>();
+    config.AddProfile<CartaCategoriaProfile>();
 });
 
 // =======================

@@ -1,0 +1,128 @@
+﻿@model proyecto.Application.DTOs.CartaDTO
+
+@{
+    ViewData["Title"] = "Detalle Carta";
+}
+
+<div class="container my-4">
+    <div class="card shadow-sm" style="max-width: 1000px; margin:0 auto; border-radius:12px;">
+
+        <!-- Encabezado -->
+        <div class="card-header bg-primario text-white fw-bold">
+            <i class="bi bi-collection me-2"></i> @Model.NombreCarta
+        </div>
+
+        <!-- Imágenes en carrusel -->
+        <div class="card-body">
+            @if (Model.ImagenesCarta != null && Model.ImagenesCarta.Any())
+            {
+                <div id="carruselCarta" class="carousel slide carousel-dark mb-4" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (int i = 0; i < Model.ImagenesCarta.Count; i++)
+                        {
+                            var img = Model.ImagenesCarta.ElementAt(i);
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@img.UrlImagen" alt="@Model.NombreCarta"
+                                     class="d-block w-100 rounded shadow-sm"
+                                     style="max-height:400px; object-fit:contain;" />
+                                @if (img.EsPrincipal)
+                                {
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <span class="badge bg-success">Principal</span>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Controles -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carruselCarta" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carruselCarta" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Siguiente</span>
+                    </button>
+                </div>
+            }
+            else
+            {
+                <div class="text-center text-muted mb-4">
+                    <i class="bi bi-image display-4"></i>
+                    <p>No hay imágenes disponibles</p>
+                </div>
+            }
+
+            <!-- Información en dos columnas -->
+            <div class="row">
+                <!-- Columna izquierda -->
+                <div class="col-md-6">
+                    <p class="mb-2"><i class="bi bi-card-text me-2 text-primario"></i><b>Descripción:</b> @Model.Descripcion</p>
+                    <p class="mb-2">
+                        <i class="bi bi-tags me-2 text-primario"></i><b>Categorías:</b>
+                        @(Model.CartaCategoria != null && Model.CartaCategoria.Any()
+                                                ? string.Join(", ", Model.CartaCategoria.Select(cc => cc.Categoria.NombreCategoria))
+                                                : "Sin categoría")
+                    </p>
+                    <p class="mb-2"><i class="bi bi-calendar-check me-2 text-primario"></i><b>Fecha de Registro:</b> @Model.FechaRegistro?.ToString("dd/MM/yyyy")</p>
+                </div>
+
+                <!-- Columna derecha -->
+                <div class="col-md-6">
+                    <p class="mb-2"><i class="bi bi-award me-2 text-primario"></i><b>Edición:</b> @Model.Edicion</p>
+                    <p class="mb-2"><i class="bi bi-star me-2 text-primario"></i><b>Rareza:</b> @Model.Rareza</p>
+                    <p class="mb-2">
+                        <i class="bi bi-shield-check me-2 text-primario"></i><b>Estado:</b>
+                        <span class="badge bg-terciario text-dark">@Model.EstadoCarta?.NombreEstado</span>
+                    </p>
+                    <p class="mb-2"><i class="bi bi-person-circle me-2 text-primario"></i><b>Propietario:</b> @Model.Vendedor?.NombreCompleto</p>
+                </div>
+            </div>
+
+            <hr />
+
+            <!-- Historial de subastas -->
+            <div class="p-3 rounded bg-fondo">
+                <h5 class="fw-semibold text-secundario">Historial de Subastas</h5>
+                @if (Model.Subastas != null && Model.Subastas.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Identificador</th>
+                                    <th>Fecha Inicio</th>
+                                    <th>Fecha Cierre</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var subasta in Model.Subastas)
+                                {
+                                    <tr>
+                                        <td>@subasta.SubastaId</td>
+                                        <td>@subasta.FechaInicio.ToString("dd/MM/yyyy")</td>
+                                        <td>@subasta.FechaCierre.ToString("dd/MM/yyyy")</td>
+                                        <td>@subasta.Estado</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">Esta carta no ha participado en subastas.</p>
+                }
+            </div>
+
+            <!-- Botón de regreso -->
+            <div class="mt-4 text-end">
+                <a class="btn btn-secundario" asp-action="Index">
+                    <i class="bi bi-arrow-left-circle me-1"></i> Regresar al listado
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

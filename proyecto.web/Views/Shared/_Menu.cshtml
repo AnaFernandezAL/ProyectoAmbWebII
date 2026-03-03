@@ -1,0 +1,52 @@
+﻿@* Views/Shared/_Menu.cshtml *@
+<nav class="navbar navbar-expand-lg bg-primario" data-bs-theme="dark">
+    <div class="container">
+        <a class="navbar-brand fw-semibold" asp-controller="Home" asp-action="Index">
+            <i class="bi bi-cash-stack me-2"></i>Subastas Pokémon
+        </a>
+
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                aria-controls="navbarMain" aria-expanded="false" aria-label="Abrir menú">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Usuario" asp-action="Index">
+                        <i class="bi bi-people me-1"></i>Usuarios
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Carta" asp-action="Index">
+                        <i class="bi bi-collection me-1"></i>Cartas
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Subasta" asp-action="Index">
+                        <i class="bi bi-gavel me-1"></i>Subastas
+                    </a>
+                </li>
+
+            </ul>
+
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle fs-4 me-2"></i>
+                        <span class="d-none d-sm-inline">Invitado</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item">Ingresar</a></li>
+                        <li><a class="dropdown-item">Salir</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

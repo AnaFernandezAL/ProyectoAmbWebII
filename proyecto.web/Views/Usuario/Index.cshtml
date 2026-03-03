@@ -1,71 +1,125 @@
-﻿@model IEnumerable<proyecto.Application.DTOs.UsuarioDTO>
+﻿@model X.PagedList.IPagedList<proyecto.Application.DTOs.UsuarioDTO>
+@using X.PagedList.Mvc.Core
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Usuarios";
 }
 
-<h1>Index</h1>
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mb-3">
+    <div>
+        <h1 class="h3 mb-1">Usuarios</h1>
+        <p class="text-muted mb-0">Administración de usuarios registrados en el sistema.</p>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.UsuarioId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NombreCompleto)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Rol)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Estado)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaRegistro)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CantidadSubastasCreadas)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CantidadPujasRealizadas)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UsuarioId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NombreCompleto)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rol)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Estado)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaRegistro)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CantidadSubastasCreadas)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CantidadPujasRealizadas)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="d-flex align-items-center gap-2">
+        <span class="badge text-bg-secondary" title="Total de usuarios">@Model?.TotalItemCount</span>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> Nuevo usuario
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-body d-flex align-items-center justify-content-between">
+        <span class="fw-semibold">Listado</span>
+    </div>
+
+    <div class="card-body p-0">
+
+        @if (Model == null || !Model.Any())
+        {
+            <!-- Sin registros -->
+            <div class="p-4 text-center">
+                <div class="display-6 mb-2">
+                    <i class="bi bi-person-x"></i>
+                </div>
+                <h2 class="h5">No hay usuarios registrados</h2>
+                <p class="text-muted mb-3">Crea el primer usuario para iniciar el sistema.</p>
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-1"></i> Crear usuario
+                </a>
+            </div>
+        }
+        else
+        {
+            <!-- Listado -->
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light position-sticky top-0" style="z-index:1;">
+                        <tr>
+                            <th scope="col" class="ps-3">Nombre completo</th>
+                            <th scope="col">Rol</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col" class="text-end pe-3" style="width: 260px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var usuario in Model)
+                        {
+                            <tr>
+                                <td class="ps-3">
+                                    <div class="fw-semibold">@usuario.NombreCompleto</div>
+                                </td>
+                                <td>@usuario.Rol?.Nombre</td>
+                                <td>@usuario.EstadoUsuario?.Nombre</td>
+
+                                <td class="text-end pe-3">
+                                    <div class="btn-group" role="group" aria-label="Acciones del usuario">
+                                        <a asp-action="Details" asp-route-id="@usuario.UsuarioId"
+                                           class="btn btn-outline-secondary btn-sm"
+                                           title="Ver detalle">
+                                            <i class="bi bi-eye"></i>
+                                            <span class="d-none d-lg-inline ms-1">Detalle</span>
+                                        </a>
+
+                                        <a asp-action="Edit" asp-route-id="@usuario.UsuarioId"
+                                           class="btn btn-outline-primary btn-sm"
+                                           title="Editar">
+                                            <i class="bi bi-pencil-square"></i>
+                                            <span class="d-none d-lg-inline ms-1">Editar</span>
+                                        </a>
+
+                                        <a asp-action="Delete" asp-route-id="@usuario.UsuarioId"
+                                           class="btn btn-outline-danger btn-sm"
+                                           title="Eliminar">
+                                            <i class="bi bi-trash"></i>
+                                            <span class="d-none d-lg-inline ms-1">Eliminar</span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <!-- Total y paginación -->
+    <div class="card-footer bg-body d-flex flex-column flex-md-row align-items-center justify-content-between gap-2 small text-muted">
+        <div>
+            Total: <strong>@Model?.TotalItemCount</strong> usuario(s)
+        </div>
+
+        @if (Model != null && Model.PageCount > 1)
+        {
+            <nav aria-label="Paginación de usuarios">
+                @Html.PagedListPager(
+                Model,
+                        page => Url.Action("Index", new { page }),
+                        new PagedListRenderOptions
+                        {
+                            UlElementClasses = new[] { "pagination", "mb-0" },
+                            LiElementClasses = new[] { "page-item" },
+                            PageClasses = new[] { "page-link" },
+                            DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                            DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                            DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                            DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                            MaximumPageNumbersToDisplay = 5
+                        }
+                        )
+        </nav>
+                }
+    </div>
+</div>

@@ -1,0 +1,63 @@
+﻿@model proyecto.Application.DTOs.UsuarioDTO
+
+@{
+    ViewData["Title"] = "Detalle Usuario";
+}
+
+<div class="container my-4">
+    <div class="card shadow-sm" style="max-width: 900px; margin:0 auto; border-radius:12px;">
+
+        <!-- Encabezado -->
+        <div class="card-header bg-primario text-white fw-bold">
+            <i class="bi bi-person-circle me-2"></i> @Model.NombreCompleto
+        </div>
+
+        <!-- Cuerpo con dos columnas -->
+        <div class="card-body">
+            <div class="row">
+                <!-- Columna izquierda -->
+                <div class="col-md-6">
+                    <p class="mb-2"><i class="bi bi-envelope me-2 text-primario"></i><b>Correo:</b> @Model.Correo</p>
+                    <p class="mb-2"><i class="bi bi-telephone me-2 text-primario"></i><b>Teléfono:</b> @Model.Telefono</p>
+                    <p class="mb-2"><i class="bi bi-calendar-check me-2 text-primario"></i><b>Fecha de Registro:</b> @Model.FechaRegistro.ToString("dd/MM/yyyy")</p>
+                </div>
+
+                <!-- Columna derecha -->
+                <div class="col-md-6">
+                    <p class="mb-2">
+                        <i class="bi bi-person-badge me-2 text-primario"></i><b>Rol:</b>
+                        <span class="badge bg-terciario text-dark">@Model.Rol?.Nombre</span>
+                    </p>
+                    <p class="mb-2">
+                        <i class="bi bi-shield-check me-2 text-primario"></i><b>Estado:</b>
+                        <span class="badge @(Model.EstadoUsuario?.Nombre == "Activo" ? "bg-success text-white" : "bg-danger text-white")">
+                            @Model.EstadoUsuario?.Nombre
+                        </span>
+                    </p>
+                </div>
+            </div>
+
+            <hr />
+
+            <!-- Sección de actividad -->
+            <div class="p-3 rounded bg-fondo">
+                <h5 class="fw-semibold text-secundario">Actividad</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <i class="bi bi-gavel me-2 text-primario"></i> Subastas creadas: <strong>@Model.CantidadSubastasCreadas</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <i class="bi bi-cash-coin me-2 text-primario"></i> Pujas realizadas: <strong>@Model.CantidadPujasRealizadas</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón de regreso -->
+            <div class="mt-4 text-end">
+                <a class="btn btn-secundario" asp-action="Index">
+                    <i class="bi bi-arrow-left-circle me-1"></i> Regresar al listado
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

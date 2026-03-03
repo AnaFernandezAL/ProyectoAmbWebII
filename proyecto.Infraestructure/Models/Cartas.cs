@@ -30,6 +30,7 @@ public partial class Cartas
     public virtual ICollection<Subastas> Subastas { get; set; } = new List<Subastas>();
 
     public virtual Usuarios Vendedor { get; set; } = null!;
+    public virtual ICollection<CartaCategoria> CartaCategoria { get; set; } = new List<CartaCategoria>();
 
     public virtual ICollection<Categorias> Categoria { get; set; } = new List<Categorias>();
 }

@@ -1,8 +1,141 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<section class="py-5 text-center bg-light rounded-3 mb-4 shadow-sm">
+    <div class="container">
+        <h1 class="display-5 fw-bold mb-3">
+            Bienvenido a Subastas Pokémon
+        </h1>
+
+        <p class="lead text-muted mb-4">
+            Administra usuarios, cartas y subastas con una interfaz clara y moderna.
+        </p>
+
+        @if (ViewBag.Id != null)
+        {
+            <span class="badge text-bg-primary fs-6 px-3 py-2">
+                Identificador activo: @ViewBag.Id
+            </span>
+        }
+    </div>
+</section>
+
+<!-- CAROUSEL -->
+<div id="carruselHome" class="carousel slide mb-5 shadow rounded overflow-hidden" data-bs-ride="carousel">
+
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carruselHome" data-bs-slide-to="0"
+                class="active" aria-current="true" aria-label="Imagen 1"></button>
+        <button type="button" data-bs-target="#carruselHome" data-bs-slide-to="1"
+                aria-label="Imagen 2"></button>
+        <button type="button" data-bs-target="#carruselHome" data-bs-slide-to="2"
+                aria-label="Imagen 3"></button>
+    </div>
+
+    <div class="carousel-inner">
+
+        <div class="carousel-item active">
+            <img src="~/images/pokemonCarr01.png" class="d-block w-100" style="height:460px; object-fit:contain; background-color:#f8f9fa;" loading="lazy" alt="Cartas Pokémon">
+            <div class="carousel-caption bg-dark bg-opacity-50 p-3 rounded-3">
+                <h5 class="fw-bold">Colección Pokémon</h5>
+                <p>Explora cartas únicas y legendarias.</p>
+            </div>
+        </div>
+
+        <div class="carousel-item">
+            <img src="~/images/pokemonCarr02.png" class="d-block w-100" style="height:460px; object-fit:contain; background-color:#f8f9fa;" loading="lazy" alt="Usuarios activos">
+            <div class="carousel-caption bg-dark bg-opacity-50 p-3 rounded-3">
+                <h5 class="fw-bold">Usuarios activos</h5>
+                <p>Conoce a compradores y vendedores registrados.</p>
+            </div>
+        </div>
+
+        <div class="carousel-item">
+            <img src="~/images/pokemonCarr03.png" class="d-block w-100" style="height:460px; object-fit:contain; background-color:#f8f9fa;" loading="lazy" alt="Subastas en curso">
+            <div class="carousel-caption bg-dark bg-opacity-50 p-3 rounded-3">
+                <h5 class="fw-bold">Subastas en curso</h5>
+                <p>Participa en subastas y haz tus mejores pujas.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controles -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#carruselHome" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+        <span class="visually-hidden">Anterior</span>
+    </button>
+
+    <button class="carousel-control-next" type="button" data-bs-target="#carruselHome" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+        <span class="visually-hidden">Siguiente</span>
+    </button>
 </div>
+
+<!-- ACCESOS RÁPIDOS -->
+<section class="container mb-5">
+    <h2 class="h4 fw-bold mb-4 text-center">Accesos rápidos</h2>
+
+    <div class="row g-4">
+
+        <!-- Usuarios -->
+        <div class="col-12 col-md-4">
+            <a asp-controller="Usuario" asp-action="Index" class="text-decoration-none text-dark">
+                <div class="card h-100 shadow-sm border-0 hover-card">
+                    <div class="card-body text-center py-4">
+                        <i class="bi bi-people fs-1 mb-3 text-primary"></i>
+                        <h5 class="fw-semibold">Usuarios</h5>
+                        <p class="text-muted small">Gestiona y visualiza los usuarios registrados.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Cartas -->
+        <div class="col-12 col-md-4">
+            <a asp-controller="Carta" asp-action="Index" class="text-decoration-none text-dark">
+                <div class="card h-100 shadow-sm border-0 hover-card">
+                    <div class="card-body text-center py-4">
+                        <i class="bi bi-collection fs-1 mb-3 text-success"></i>
+                        <h5 class="fw-semibold">Cartas</h5>
+                        <p class="text-muted small">Consulta el catálogo de cartas Pokémon disponibles.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Subastas -->
+        <div class="col-12 col-md-4">
+            <a asp-controller="Subasta" asp-action="Index" class="text-decoration-none text-dark">
+                <div class="card h-100 shadow-sm border-0 hover-card">
+                    <div class="card-body text-center py-4">
+                        <i class="bi bi-currency-dollar fs-1 mb-3 text-danger"></i>
+                        <h5 class="fw-semibold">Subastas</h5>
+                        <p class="text-muted small">Participa en subastas y realiza tus pujas.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        const myCarouselElement = document.querySelector('#carruselHome')
+
+        const carousel = new bootstrap.Carousel(myCarouselElement, {
+            interval: 3500,
+            pause: false,
+            ride: 'carousel'
+        })
+    </script>
+
+    <style>
+        .hover-card:hover {
+            transform: translateY(-4px);
+            transition: all 0.25s ease;
+            box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
+        }
+    </style>
+}

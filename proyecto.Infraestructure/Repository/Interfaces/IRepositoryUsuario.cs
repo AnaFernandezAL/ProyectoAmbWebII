@@ -9,7 +9,15 @@ namespace proyecto.Infraestructure.Repository.Interfaces
 {
     public interface IRepositoryUsuario
     {
-        Task<ICollection<Usuarios>> ListAsync(); 
-        Task<Usuarios> FindByIdAsync(int id);
+        Task<ICollection<Usuarios>> ListAsync();
+
+        Task<Usuarios?> FindByIdAsync(int id);
+        Task<int> AddAsync(Usuarios entity);
+        Task UpdateAsync(Usuarios entity);
+        Task DeleteAsync(int id);
+
+        // Consultas adicionales (ejemplo)
+        Task<ICollection<Usuarios>> FindByNameAsync(string nombre);
+        Task<ICollection<Usuarios>> GetUsuariosByRol(int rolId);
     }
 }

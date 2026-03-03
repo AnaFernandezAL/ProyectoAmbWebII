@@ -1,5 +1,5 @@
 ﻿using proyecto.Application.DTOs;
-using System.Collections.Generic;
+using proyecto.Infraestructure.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,15 @@ namespace proyecto.Application.Services.Interfaces
 {
     public interface IServiceUsuario
     {
-        Task<ICollection<UsuarioDTO>> ListAsync(); 
+        Task<ICollection<UsuarioDTO>> ListAsync();
         Task<UsuarioDTO?> FindByIdAsync(int id);
+        Task<int> AddAsync(UsuarioDTO dto);
+        Task UpdateAsync(int id, UsuarioDTO dto);
+        Task DeleteAsync(int id);
+
+        // Consultas adicionales
+        Task<ICollection<UsuarioDTO>> FindByNameAsync(string nombre);
+        Task<ICollection<UsuarioDTO>> GetUsuariosByRol(int rolId);
     }
 }
+

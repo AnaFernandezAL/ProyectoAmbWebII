@@ -74,24 +74,32 @@ public partial class SubastasPokemonDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Cartas__Vendedor__5070F446");
 
-            entity.HasMany(d => d.Categoria).WithMany(p => p.Carta)
-                .UsingEntity<Dictionary<string, object>>(
-                    "CartaCategoria",
-                    r => r.HasOne<Categorias>().WithMany()
-                        .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__CartaCate__Categ__5812160E"),
-                    l => l.HasOne<Cartas>().WithMany()
-                        .HasForeignKey("CartaId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__CartaCate__Carta__571DF1D5"),
+            // Relación muchos-a-muchos usando la clase CartaCategoria
+            entity.HasMany(d => d.Categoria)
+                .WithMany(p => p.Carta)
+                .UsingEntity<CartaCategoria>(
+                    j => j.HasOne(cc => cc.Categoria)
+                          .WithMany(c => c.CartaCategoria)
+                          .HasForeignKey(cc => cc.CategoriaId)
+                          .OnDelete(DeleteBehavior.ClientSetNull)
+                          .HasConstraintName("FK__CartaCate__Categ__5812160E"),
+                    j => j.HasOne(cc => cc.Carta)
+                          .WithMany(c => c.CartaCategoria)
+                          .HasForeignKey(cc => cc.CartaId)
+                          .OnDelete(DeleteBehavior.ClientSetNull)
+                          .HasConstraintName("FK__CartaCate__Carta__571DF1D5"),
                     j =>
                     {
-                        j.HasKey("CartaId", "CategoriaId").HasName("PK__CartaCat__98361B9758A7492F");
-                        j.IndexerProperty<int>("CartaId").HasColumnName("CartaID");
-                        j.IndexerProperty<int>("CategoriaId").HasColumnName("CategoriaID");
+                        j.HasKey(cc => new { cc.CartaId, cc.CategoriaId })
+                         .HasName("PK__CartaCat__98361B9758A7492F");
+
+                        j.ToTable("CartaCategoria");
+
+                        j.Property(cc => cc.CartaId).HasColumnName("CartaID");
+                        j.Property(cc => cc.CategoriaId).HasColumnName("CategoriaID");
                     });
         });
+
 
         modelBuilder.Entity<Categorias>(entity =>
         {
@@ -300,6 +308,8 @@ public partial class SubastasPokemonDbContext : DbContext
             entity.Property(e => e.FechaRegistro)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.Notificado)
+                .HasDefaultValue(false);
             entity.Property(e => e.NombreCompleto)
                 .HasMaxLength(150)
                 .IsUnicode(false);

@@ -1,0 +1,132 @@
+﻿@model X.PagedList.IPagedList<proyecto.Application.DTOs.CartaDTO>
+@using X.PagedList.Mvc.Core
+
+@{
+    ViewData["Title"] = "Cartas";
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mb-3">
+    <div>
+        <h1 class="h3 mb-1">Cartas</h1>
+        <p class="text-muted mb-0">Listado de cartas disponibles para subasta.</p>
+    </div>
+
+    <div class="d-flex align-items-center gap-2">
+        <span class="badge text-bg-secondary" title="Total de cartas">@Model?.TotalItemCount</span>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> Nueva carta
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-body d-flex align-items-center justify-content-between">
+        <span class="fw-semibold">Listado</span>
+    </div>
+
+    <div class="card-body">
+        @if (Model == null || !Model.Any())
+        {
+            <!-- Sin registros -->
+            <div class="p-4 text-center">
+                <div class="display-6 mb-2">
+                    <i class="bi bi-collection"></i>
+                </div>
+                <h2 class="h5">No hay cartas registradas</h2>
+                <p class="text-muted mb-3">Crea la primera carta para iniciar el sistema.</p>
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-1"></i> Crear carta
+                </a>
+            </div>
+        }
+        else
+        {
+            <!-- Listado en tarjetas -->
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                @foreach (var carta in Model)
+                {
+                    var imagenPrincipal = carta.ImagenesCarta?.FirstOrDefault(i => i.EsPrincipal)?.UrlImagen;
+
+                    <div class="col">
+                        <div class="card h-100 shadow-sm">
+                            <!-- Contenedor de imagen con fondo y espaciado -->
+                            <div class="d-flex align-items-center justify-content-center bg-light"
+                                 style="height:220px; padding:10px; background-color:#f0f8ff; border-bottom:1px solid #ddd;">
+                                @if (!string.IsNullOrEmpty(imagenPrincipal))
+                                {
+                                    <img src="@imagenPrincipal" alt="@carta.NombreCarta"
+                                         style="max-height:100%; max-width:100%; object-fit:contain;" />
+                                }
+                                else
+                                {
+                                    <i class="bi bi-image display-4 text-muted"></i>
+                                }
+                            </div>
+
+                            <!-- Información de la carta -->
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">@carta.NombreCarta</h5>
+                            <p class="card-text mb-1">
+                                <b>Categorías:</b>
+                                @(carta.CartaCategoria != null && carta.CartaCategoria.Any()? string.
+                                Join(", ", carta.CartaCategoria.Select(cc => cc.Categoria.NombreCategoria)): "Sin categoría")</p>
+                                <p class="card-text mb-1"><b>Condición:</b> @carta.Condicion</p>
+                                <p class="card-text mb-1"><b>Estado:</b> @carta.EstadoCarta?.NombreEstado</p>
+                            </div>
+
+                            <!-- Acciones -->
+                            <div class="card-footer bg-body text-end">
+                                <div class="btn-group" role="group" aria-label="Acciones de la carta">
+                                    <a asp-action="Details" asp-route-id="@carta.CartaId"
+                                       class="btn btn-outline-secondary btn-sm" title="Ver detalle">
+                                        <i class="bi bi-eye"></i>
+                                        <span class="d-none d-lg-inline ms-1">Detalle</span>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@carta.CartaId"
+                                       class="btn btn-outline-primary btn-sm" title="Editar">
+                                        <i class="bi bi-pencil-square"></i>
+                                        <span class="d-none d-lg-inline ms-1">Editar</span>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@carta.CartaId"
+                                       class="btn btn-outline-danger btn-sm" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                        <span class="d-none d-lg-inline ms-1">Eliminar</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    }
+                    </div>
+                    }
+    </div>
+
+    <!-- Total y paginación -->
+    <div class="card-footer bg-body d-flex flex-column flex-md-row align-items-center justify-content-between gap-2 small text-muted">
+        <div>
+            Total: <strong>@Model?.TotalItemCount</strong> carta(s)
+        </div>
+
+        @if (Model != null && Model.PageCount > 1)
+        {
+            <nav aria-label="Paginación de cartas">
+                @Html.PagedListPager(
+                Model,
+                        page => Url.Action("Index", new { page }),
+                        new PagedListRenderOptions
+                        {
+                            UlElementClasses = new[] { "pagination", "mb-0" },
+                            LiElementClasses = new[] { "page-item" },
+                            PageClasses = new[] { "page-link" },
+                            DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                            DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                            DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                            DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                            MaximumPageNumbersToDisplay = 5
+                        }
+                        )
+        </nav>
+                }
+    </div>
+</div>

@@ -1,31 +1,61 @@
-html {
-  font-size: 14px;
+:root {
+    --color-primario: #A8D5BA; /* Verde Bulbasaur pastel */
+    --color-secundario: #A7C7E7; /* Azul claro pastel */
+    --color-terciario: #CBB7E9; /* Morado claro pastel */
+    --color-acento: #F7C6C7; /* Rosa pastel */
+    --color-texto: #333333; /* Texto oscuro */
+    --color-fondo: #F5F5F5; /* Fondo neutro */
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+/* Botones */
+.btn-primary {
+    background-color: var(--color-primario);
+    border-color: var(--color-primario);
+    color: #fff;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    .btn-primary:hover {
+        background-color: #6CA98B;
+        border-color: #6CA98B;
+    }
+
+.btn-secondary {
+    background-color: var(--color-secundario);
+    border-color: var(--color-secundario);
+    color: #fff;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+    .btn-secondary:hover {
+        background-color: #8AAED6;
+        border-color: #8AAED6;
+    }
+
+/* Navbar */
+.navbar {
+    background-color: var(--color-terciario);
 }
 
-body {
-  margin-bottom: 60px;
+    .navbar .nav-link {
+        color: white !important;
+    }
+
+        .navbar .nav-link:hover {
+            color: var(--color-acento) !important;
+        }
+
+/* Footer */
+footer {
+    background-color: var(--color-primario);
+    color: white;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* Cards */
+.card {
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.card-header {
+    background-color: var(--color-secundario);
+    color: white;
 }

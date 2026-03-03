@@ -11,10 +11,16 @@ namespace proyecto.Application.Profiles
 {
     public class UsuarioProfile : Profile
     {
-        public UsuarioProfile() 
-        { CreateMap<Usuarios, UsuarioDTO>()
-                .ForMember(dest => dest.Rol, opt => opt.MapFrom(src => src.Rol.NombreRol))
-                .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => src.EstadoUsuario.NombreEstado)); 
+        public UsuarioProfile()
+        {
+            CreateMap<Usuarios, UsuarioDTO>()
+                .ForMember(dest => dest.Correo, opt => opt.MapFrom(src => src.CorreoElectronico))
+                .ForMember(dest => dest.NombreCompleto, opt => opt.MapFrom(src => src.NombreCompleto))
+                .ForMember(dest => dest.Telefono, opt => opt.MapFrom(src => src.Telefono))
+                .ForMember(dest => dest.FechaRegistro, opt => opt.MapFrom(src => src.FechaRegistro))
+                .ForMember(dest => dest.Rol, opt => opt.MapFrom(src => src.Rol))
+                .ForMember(dest => dest.EstadoUsuario, opt => opt.MapFrom(src => src.EstadoUsuario))
+                .ReverseMap();
         }
     }
 }
