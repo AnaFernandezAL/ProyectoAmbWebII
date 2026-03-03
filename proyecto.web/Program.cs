@@ -68,6 +68,7 @@ builder.Services.AddAutoMapper(config =>
 {
     config.AddProfile<UsuarioProfile>();
     config.AddProfile<SubastaProfile>();
+    config.AddProfile<EstadoSubastaProfile>();
     config.AddProfile<EstadoUsuarioProfile>();
     config.AddProfile<RolProfile>();
     config.AddProfile<CategoriaProfile>();

@@ -2,24 +2,22 @@
 @using X.PagedList.Mvc.Core
 
 @{
-    ViewData["Title"] = "Subastas";
+    ViewData["Title"] = "Subastas Finalizadas";
 }
 
 <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mb-3">
     <div>
-        <h1 class="h3 mb-1">Subastas</h1>
-        <p class="text-muted mb-0">Listado general de subastas registradas en el sistema.</p>
+        <h1 class="h3 mb-1">Subastas Finalizadas</h1>
+        <p class="text-muted mb-0">Listado de subastas que ya han concluido.</p>
     </div>
 
     <div class="d-flex align-items-center gap-2">
-        <span class="badge text-bg-secondary" title="Total de subastas">@Model?.TotalItemCount</span>
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-1"></i> Nueva subasta
-        </a>
+        <span class="badge text-bg-secondary" title="Total de subastas finalizadas">@Model?.TotalItemCount</span>
     </div>
 </div>
 
 <div class="card shadow-sm">
+    <!-- Tabs de navegación -->
     <ul class="nav nav-tabs card-header-tabs px-3">
         <li class="nav-item">
             <a class="nav-link @(ViewData["Title"]?.ToString() == "Subastas" ? "active" : "")" asp-action="Index">
@@ -45,11 +43,8 @@
                 <div class="display-6 mb-2">
                     <i class="bi bi-box-seam"></i>
                 </div>
-                <h2 class="h5">No hay subastas registradas</h2>
-                <p class="text-muted mb-3">Crea la primera subasta para iniciar el sistema.</p>
-                <a asp-action="Create" class="btn btn-primary">
-                    <i class="bi bi-plus-lg me-1"></i> Crear subasta
-                </a>
+                <h2 class="h5">No hay subastas finalizadas</h2>
+                <p class="text-muted mb-3">Cuando una subasta concluya, aparecerá aquí.</p>
             </div>
         }
         else
@@ -60,10 +55,10 @@
                         <tr>
                             <th scope="col" class="ps-3">Objeto</th>
                             <th scope="col">Imagen</th>
-                            <th scope="col">Fecha Inicio</th>
                             <th scope="col">Fecha Cierre</th>
                             <th scope="col">Cantidad de Pujas</th>
-                            <th scope="col" class="text-end pe-3" style="width: 220px;">Acciones</th>
+                            <th scope="col">Estado Final</th>
+                            <th scope="col" class="text-end pe-3" style="width: 160px;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -86,34 +81,18 @@
                                         <span class="text-muted">Sin imagen</span>
                                     }
                                 </td>
-                                <td>@subasta.FechaInicio.ToString("dd/MM/yyyy")</td>
                                 <td>@subasta.FechaCierre.ToString("dd/MM/yyyy")</td>
                                 <td>
                                     <span class="badge bg-info text-dark">@subasta.CantidadPujas</span>
                                 </td>
+                                <td>@subasta.EstadoSubasta?.NombreEstado</td>
                                 <td class="text-end pe-3">
-                                    <div class="btn-group" role="group" aria-label="Acciones de la subasta">
-                                        <a asp-action="Details" asp-route-id="@subasta.SubastaId"
-                                           class="btn btn-outline-secondary btn-sm"
-                                           title="Ver detalle">
-                                            <i class="bi bi-eye"></i>
-                                            <span class="d-none d-lg-inline ms-1">Detalle</span>
-                                        </a>
-
-                                        <a asp-action="Edit" asp-route-id="@subasta.SubastaId"
-                                           class="btn btn-outline-primary btn-sm"
-                                           title="Editar">
-                                            <i class="bi bi-pencil-square"></i>
-                                            <span class="d-none d-lg-inline ms-1">Editar</span>
-                                        </a>
-
-                                        <a asp-action="Delete" asp-route-id="@subasta.SubastaId"
-                                           class="btn btn-outline-danger btn-sm"
-                                           title="Eliminar">
-                                            <i class="bi bi-trash"></i>
-                                            <span class="d-none d-lg-inline ms-1">Eliminar</span>
-                                        </a>
-                                    </div>
+                                    <a asp-action="Details" asp-route-id="@subasta.SubastaId"
+                                       class="btn btn-outline-secondary btn-sm"
+                                       title="Ver detalle">
+                                        <i class="bi bi-eye"></i>
+                                        <span class="d-none d-lg-inline ms-1">Detalle</span>
+                                    </a>
                                 </td>
                             </tr>
                         }
@@ -125,15 +104,15 @@
 
     <div class="card-footer bg-body d-flex flex-column flex-md-row align-items-center justify-content-between gap-2 small text-muted">
         <div>
-            Total: <strong>@Model?.TotalItemCount</strong> subasta(s)
+            Total: <strong>@Model?.TotalItemCount</strong> subasta(s) finalizada(s)
         </div>
 
         @if (Model != null && Model.PageCount > 1)
         {
-            <nav aria-label="Paginación de subastas">
+            <nav aria-label="Paginación de subastas finalizadas">
                 @Html.PagedListPager(
                 Model,
-                        page => Url.Action("Index", new { page }),
+                        page => Url.Action("Finalizadas", new { page }),
                         new PagedListRenderOptions
                         {
                             UlElementClasses = new[] { "pagination", "mb-0" },

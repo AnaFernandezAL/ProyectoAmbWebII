@@ -1,0 +1,86 @@
+﻿@model proyecto.Application.DTOs.SubastaDTO
+
+@{
+    ViewData["Title"] = "Detalle Subasta";
+}
+
+<div class="container my-4">
+    <div class="card shadow-sm" style="max-width: 1000px; margin:0 auto; border-radius:12px;">
+
+
+        <div class="card-header bg-primario text-white fw-bold">
+            <i class="bi bi-box-seam me-2"></i> Subasta #@Model.SubastaId - @Model.Carta?.NombreCarta
+        </div>
+
+
+        <div class="card-body">
+            <div class="row">
+                <!-- Columna izquierda: Información de la carta -->
+                <div class="col-md-6">
+                    <h5 class="fw-semibold text-secundario">Información del Objeto</h5>
+                    <p class="mb-2"><b>Nombre:</b> @Model.Carta?.NombreCarta</p>
+
+                    <p class="mb-2">
+                        <b>Imagen:</b><br />
+                        @if (Model.Carta?.ImagenesCarta != null && Model.Carta.ImagenesCarta.Any())
+                        {
+                            <img src="@Model.Carta.ImagenesCarta.First().UrlImagen"
+                                 alt="@Model.Carta.NombreCarta"
+                                 class="img-thumbnail mt-2"
+                                 style="max-height:200px;" />
+                        }
+                        else
+                        {
+                            <span class="text-muted">Sin imagen disponible</span>
+                        }
+                    </p>
+
+                    <p class="mb-2">
+                        <b>Categorías:</b>
+                        @if (Model.Carta?.CartaCategoria != null && Model.Carta.CartaCategoria.Any())
+                        {
+                            foreach (var categoria in Model.Carta.CartaCategoria)
+                            {
+                                <span class="badge bg-terciario text-dark me-1">@categoria.Categoria.NombreCategoria</span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted">Sin categorías</span>
+                        }
+                    </p>
+
+                    <p class="mb-2"><b>Condición:</b> @Model.Carta?.Condicion</p>
+                </div>
+
+                <!-- Columna derecha: Información de la subasta -->
+                <div class="col-md-6">
+                    <h5 class="fw-semibold text-secundario">Datos de la Subasta</h5>
+                    <p class="mb-2"><i class="bi bi-calendar-event me-2 text-primario"></i><b>Fecha Inicio:</b> @Model.FechaInicio.ToString("dd/MM/yyyy")</p>
+                    <p class="mb-2"><i class="bi bi-calendar-x me-2 text-primario"></i><b>Fecha Cierre:</b> @Model.FechaCierre.ToString("dd/MM/yyyy")</p>
+                    <p class="mb-2"><i class="bi bi-cash me-2 text-primario"></i><b>Precio Base:</b> @Model.PrecioBase.ToString("C")</p>
+                    <p class="mb-2"><i class="bi bi-arrow-up-short me-2 text-primario"></i><b>Incremento Mínimo:</b> @Model.IncrementoMinimo.ToString("C")</p>
+                    <p class="mb-2"><i class="bi bi-info-circle me-2 text-primario"></i><b>Estado Actual:</b> @Model.EstadoSubasta?.NombreEstado</p>
+                    <p class="mb-2"><i class="bi bi-gavel me-2 text-primario"></i><b>Cantidad de Pujas:</b> @Model.CantidadPujas</p>
+                </div>
+            </div>
+
+            <hr />
+
+            <!-- Historial de pujas -->
+            <div class="p-3 rounded bg-fondo">
+                <h5 class="fw-semibold text-secundario">Historial de Pujas</h5>
+                <a asp-controller="Pujas" asp-action="Index" asp-route-subastaId="@Model.SubastaId"
+                   class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-list-ul me-1"></i> Ver historial completo
+                </a>
+            </div>
+
+            <div class="mt-4 text-end">
+                <a class="btn btn-secundario" asp-action="Index">
+                    <i class="bi bi-arrow-left-circle me-1"></i> Regresar al listado
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

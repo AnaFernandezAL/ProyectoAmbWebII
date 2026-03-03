@@ -14,11 +14,11 @@ namespace proyecto.Application.Profiles
         public SubastaProfile()
         {
             CreateMap<Subastas, SubastaDTO>()
-                .ForMember(d => d.NombreCarta, opt => opt.MapFrom(s => s.Carta.NombreCarta))
-                .ForMember(d => d.ImagenPrincipal, opt => opt.MapFrom(s =>
-                    s.Carta.ImagenesCarta.FirstOrDefault(i => i.EsPrincipal).Urlimagen))
-                .ForMember(d => d.CantidadPujas, opt => opt.MapFrom(s => s.Pujas.Count))
-                .ForMember(d => d.Estado, opt => opt.MapFrom(s => s.EstadoSubasta.NombreEstado));
+                .ForMember(dest => dest.CantidadPujas, opt => opt.MapFrom(src => src.Pujas.Count))
+                .ForMember(dest => dest.EstadoSubasta, opt => opt.MapFrom(src => src.EstadoSubasta))
+                .ForMember(dest => dest.Carta, opt => opt.MapFrom(src => src.Carta))
+                .ForMember(dest => dest.Vendedor, opt => opt.MapFrom(src => src.Vendedor))
+                .ReverseMap();
         }
     }
 }

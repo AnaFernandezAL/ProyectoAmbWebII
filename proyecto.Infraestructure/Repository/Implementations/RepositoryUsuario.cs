@@ -18,7 +18,6 @@ namespace proyecto.Infraestructure.Repository.Implementations
         {
             _context = context;
         }
-
         public async Task<ICollection<Usuarios>> ListAsync()
         {
             return await _context.Usuarios

@@ -15,8 +15,6 @@ namespace proyecto.Application.Services.Interfaces
         Task<int> AddAsync(UsuarioDTO dto);
         Task UpdateAsync(int id, UsuarioDTO dto);
         Task DeleteAsync(int id);
-
-        // Consultas adicionales
         Task<ICollection<UsuarioDTO>> FindByNameAsync(string nombre);
         Task<ICollection<UsuarioDTO>> GetUsuariosByRol(int rolId);
     }

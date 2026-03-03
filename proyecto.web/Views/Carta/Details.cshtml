@@ -104,7 +104,7 @@
                                         <td>@subasta.SubastaId</td>
                                         <td>@subasta.FechaInicio.ToString("dd/MM/yyyy")</td>
                                         <td>@subasta.FechaCierre.ToString("dd/MM/yyyy")</td>
-                                        <td>@subasta.Estado</td>
+                                        <td>@subasta.EstadoSubasta?.NombreEstado</td>
                                     </tr>
                                 }
                             </tbody>

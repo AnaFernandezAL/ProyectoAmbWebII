@@ -15,8 +15,6 @@ namespace proyecto.Infraestructure.Repository.Interfaces
         Task<int> AddAsync(Usuarios entity);
         Task UpdateAsync(Usuarios entity);
         Task DeleteAsync(int id);
-
-        // Consultas adicionales (ejemplo)
         Task<ICollection<Usuarios>> FindByNameAsync(string nombre);
         Task<ICollection<Usuarios>> GetUsuariosByRol(int rolId);
     }
