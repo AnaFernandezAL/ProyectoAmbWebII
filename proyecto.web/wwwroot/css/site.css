@@ -1,13 +1,12 @@
 :root {
-    --color-primario: #A8D5BA; /* Verde Bulbasaur pastel */
-    --color-secundario: #A7C7E7; /* Azul claro pastel */
-    --color-terciario: #CBB7E9; /* Morado claro pastel */
-    --color-acento: #F7C6C7; /* Rosa pastel */
-    --color-texto: #333333; /* Texto oscuro */
-    --color-fondo: #F5F5F5; /* Fondo neutro */
+    --color-primario: #A8D5BA;
+    --color-secundario: #A7C7E7;
+    --color-terciario: #CBB7E9;
+    --color-acento: #F7C6C7;
+    --color-texto: #333333;
+    --color-fondo: #F5F5F5;
 }
 
-/* Botones */
 .btn-primary {
     background-color: var(--color-primario);
     border-color: var(--color-primario);
@@ -30,7 +29,6 @@
         border-color: #8AAED6;
     }
 
-/* Navbar */
 .navbar {
     background-color: var(--color-terciario);
 }
@@ -42,14 +40,12 @@
         .navbar .nav-link:hover {
             color: var(--color-acento) !important;
         }
-
-/* Footer */
+        
 footer {
     background-color: var(--color-primario);
     color: white;
 }
 
-/* Cards */
 .card {
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.05);
@@ -58,4 +54,169 @@ footer {
 .card-header {
     background-color: var(--color-secundario);
     color: white;
+}
+
+/*Acá comienza el css del menú*/
+
+#navbarMain {
+    justify-content: space-between;
+}
+
+.search-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.search-bar {
+    width: 100%;
+    max-width: 500px;
+}
+
+.glass-navbar-wrapper {
+    position: sticky;
+    top: 12px;
+    margin: 12px 20px;
+    border-radius: 22px;
+    overflow: hidden;
+    background: rgba(216, 180, 248, 0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+}
+
+.top-bar {
+    padding: 4px 12px;
+    font-size: 0.75rem;
+}
+
+.navbar {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+}
+
+.bottom-bar {
+    padding: 6px 0;
+    font-size: 0.9rem;
+}
+
+.search-bar {
+    width: 65%;
+    max-width: 700px;
+    gap: 10px;
+}
+
+.search-input {
+    height: 36px;
+    border-radius: 20px;
+    padding-left: 15px;
+}
+
+.search-button {
+    height: 36px;
+    width: 42px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.top-bar,
+.bottom-bar,
+.navbar {
+    background: transparent !important;
+}
+
+.glass-navbar-wrapper a {
+    color: white !important;
+}
+
+    .glass-navbar-wrapper a:hover {
+        color: #ffd54f !important;
+    }
+
+.glass-navbar-wrapper .nav-link,
+.glass-navbar-wrapper .bottom-bar a,
+.glass-navbar-wrapper .top-bar a {
+    font-size: 1.05rem; 
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.glass-navbar-wrapper .nav-item.dropdown .nav-link {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.glass-navbar-wrapper .bi-person-circle {
+    font-size: 1.8rem !important;
+}
+
+.glass-navbar-wrapper a {
+    color: #2c1a47 !important;
+}
+
+    .glass-navbar-wrapper a:hover {
+        color: #5e2ca5 !important;
+    }
+
+.logo-home {
+    max-width: 220px;
+    height: auto;
+    display: block;
+    margin: 0 auto 20px auto;
+}
+
+.hero-text h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.hero-text p {
+    max-width: 700px;
+    margin: 0 auto;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #444;
+}
+
+body {
+    background-image: url('/Images/fondoInicio.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
+.content-wrapper {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(4px);
+    padding: 60px 20px;
+    min-height: 100vh;
+}
+
+.carousel-container {
+    width: 100%;
+    max-width: 900px;
+    height: 400px;
+    margin: 0 auto;
+}
+
+.carousel,
+.carousel-inner,
+.carousel-item {
+    height: 100%;
+}
+
+    .carousel-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.contenedor-carrusel {
+    padding: 0;
 }

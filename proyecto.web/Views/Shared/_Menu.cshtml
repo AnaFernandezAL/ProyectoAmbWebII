@@ -1,52 +1,104 @@
 ﻿@* Views/Shared/_Menu.cshtml *@
-<nav class="navbar navbar-expand-lg bg-primario" data-bs-theme="dark">
-    <div class="container">
-        <a class="navbar-brand fw-semibold" asp-controller="Home" asp-action="Index">
-            <i class="bi bi-cash-stack me-2"></i>Subastas Pokémon
-        </a>
 
-        <button class="navbar-toggler" type="button"
-                data-bs-toggle="collapse" data-bs-target="#navbarMain"
-                aria-controls="navbarMain" aria-expanded="false" aria-label="Abrir menú">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<div class="glass-navbar-wrapper">
 
-        <div class="collapse navbar-collapse" id="navbarMain">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+    <!-- 🔹 BARRA SUPERIOR -->
+    <div class="top-bar small px-3 py-1 d-flex justify-content-end gap-4">
+        <a class="text-light text-decoration-none"
+           asp-controller="Home" asp-action="Index">Inicio</a>
 
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Usuario" asp-action="Index">
-                        <i class="bi bi-people me-1"></i>Usuarios
-                    </a>
-                </li>
+        <a class="text-light text-decoration-none"
+           asp-controller="Subasta" asp-action="Index">Subastas Activas</a>
 
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Carta" asp-action="Index">
-                        <i class="bi bi-collection me-1"></i>Cartas
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Subasta" asp-action="Index">
-                        <i class="bi bi-gavel me-1"></i>Subastas
-                    </a>
-                </li>
-
-            </ul>
-
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle fs-4 me-2"></i>
-                        <span class="d-none d-sm-inline">Invitado</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item">Ingresar</a></li>
-                        <li><a class="dropdown-item">Salir</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
+        <a class="text-light text-decoration-none"
+           asp-controller="Carta" asp-action="Index">Explorar Cartas</a>
     </div>
-</nav>
+
+    <!-- 🔹 NAVBAR PRINCIPAL -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+
+            <a class="navbar-brand me-4"
+               asp-controller="Home" asp-action="Index">
+                <img src="~/images/LogoLaCartera(sinFondo).png"
+                     alt="Logo"
+                     style="height:90px;" />
+            </a>
+
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse d-flex align-items-center" id="navbarMain">
+
+                <!-- Buscador -->
+                <form class="search-wrapper">
+                    <div class="d-flex align-items-center search-bar">
+                        <input class="form-control search-input"
+                               type="search"
+                               placeholder="Buscar cartas, subastas...">
+
+                        <button class="btn btn-warning search-button"
+                                type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Usuario -->
+                <ul class="navbar-nav ms-auto align-items-center gap-3">
+
+                    <li class="nav-item">
+                        <a class="nav-link text-light"
+                           asp-controller="Subasta"
+                           asp-action="Index">
+                            <i class="bi bi-gavel me-1"></i>Mis Subastas
+                        </a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-light"
+                           href="#"
+                           data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle fs-4 me-2"></i>
+                            Invitado
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item"
+                                   asp-controller="Usuario"
+                                   asp-action="Index">
+                                    Usuarios
+                                </a>
+                            </li>
+                            <li><a class="dropdown-item">Ingresar</a></li>
+                            <li><a class="dropdown-item">Salir</a></li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 🔹 Barra inferior -->
+    <div class="bottom-bar text-center py-2">
+        <a class="mx-3 text-light text-decoration-none"
+           asp-controller="Carta"
+           asp-action="Index">Cartas</a>
+
+        <a class="mx-3 text-light text-decoration-none"
+           asp-controller="Subasta"
+           asp-action="Index">Subastas</a>
+
+        <a class="mx-3 text-light text-decoration-none"
+           asp-controller="Usuario"
+           asp-action="Index">Usuarios</a>
+    </div>
+
+</div>
+

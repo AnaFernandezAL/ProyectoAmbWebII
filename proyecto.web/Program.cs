@@ -55,11 +55,14 @@ builder.Host.UseSerilog(Log.Logger);
 builder.Services.AddTransient<IRepositoryUsuario, RepositoryUsuario>();
 builder.Services.AddTransient<IRepositorySubasta, RepositorySubasta>();
 builder.Services.AddTransient<IRepositoryCarta, RepositoryCarta>();
+builder.Services.AddTransient<IRepositoryPujas, RepositoryPujas>();
 
 // *** Services
 builder.Services.AddTransient<IServiceUsuario, ServiceUsuario>();
 builder.Services.AddTransient<IServiceSubasta, ServiceSubasta>();
 builder.Services.AddTransient<IServiceCarta, ServiceCarta>();
+builder.Services.AddTransient<IServicePujas, ServicePujas>();
+
 
 // =======================
 // Configurar AutoMapper

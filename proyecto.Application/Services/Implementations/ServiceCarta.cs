@@ -40,9 +40,6 @@ namespace proyecto.Application.Services.Implementations
 
             var dto = _mapper.Map<CartaDTO>(entity);
 
-            // 🔹 Ejemplo: podrías calcular si la carta está en alguna subasta activa
-            // dto.TieneSubastaActiva = await _context.Subastas.AnyAsync(s => s.CartaId == id && s.Estado == "Activa");
-
             return dto;
         }
 

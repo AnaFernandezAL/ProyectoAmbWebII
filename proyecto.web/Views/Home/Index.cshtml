@@ -2,15 +2,81 @@
     ViewData["Title"] = "Inicio";
 }
 
+<div class="content-wrapper">
+
+    <!-- CAROUSEL -->
+    <div class="carousel-container">
+        <div id="carruselHome" class="carousel slide mb-5 shadow rounded overflow-hidden" data-bs-ride="carousel">
+
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carruselHome" data-bs-slide-to="0"
+                        class="active" aria-current="true" aria-label="Imagen 1"></button>
+                <button type="button" data-bs-target="#carruselHome" data-bs-slide-to="1"
+                        aria-label="Imagen 2"></button>
+                <button type="button" data-bs-target="#carruselHome" data-bs-slide-to="2"
+                        aria-label="Imagen 3"></button>
+            </div>
+
+            <div class="carousel-inner">
+
+                <div class="carousel-item active">
+                    <img src="~/images/carrusel1.jpg" class="d-block w-100" style="height:460px; object-fit:contain; background-color:#f8f9fa;" loading="lazy" alt="Cartas Pokémon">
+                    <div class="carousel-caption bg-dark bg-opacity-50 p-3 rounded-3">
+                        <h5 class="fw-bold">Colección Pokémon</h5>
+                        <p>Explora Un catálogo lleno de cartas tan únicas como tú.</p>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <img src="~/images/carrusel3.png" class="d-block w-100" style="height:460px; object-fit:contain; background-color:#f8f9fa;" loading="lazy" alt="Usuarios activos">
+                    <div class="carousel-caption bg-dark bg-opacity-50 p-3 rounded-3">
+                        <h5 class="fw-bold">Usuarios activos</h5>
+                        <p>Conoce a compradores y vendedores registrados verificados.</p>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <img src="~/images/carrusel2.jpg" class="d-block w-100" style="height:460px; object-fit:contain; background-color:#f8f9fa;" loading="lazy" alt="Subastas en curso">
+                    <div class="carousel-caption bg-dark bg-opacity-50 p-3 rounded-3">
+                        <h5 class="fw-bold">Subastas en curso</h5>
+                        <p>Participa en subastas y haz tus mejores pujas para atraparlos a todos.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controles -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carruselHome" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+
+            <button class="carousel-control-next" type="button" data-bs-target="#carruselHome" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>
+        </div>
+    </div>
+
+    <!--Información de la página-->
+
 <section class="py-5 text-center bg-light rounded-3 mb-4 shadow-sm">
     <div class="container">
-        <h1 class="display-5 fw-bold mb-3">
-            Bienvenido a Subastas Pokémon
-        </h1>
 
-        <p class="lead text-muted mb-4">
-            Administra usuarios, cartas y subastas con una interfaz clara y moderna.
-        </p>
+        <div class="hero-logo text-center">
+            <img src="~/images/LogoLaCartera(sinFondo).png"
+                 alt="Logo La Cartera"
+                 class="logo-home">
+        </div>
+
+        <div class="hero-text text-center">
+            <h1>Bienvenido a La Cartera</h1>
+            <p>
+                La Cartera es una plataforma especializada en la compra, venta y subasta
+                de cartas Pokémon. Conecta con otros coleccionistas, descubre piezas únicas
+                y participa en subastas en tiempo real dentro de una comunidad apasionada
+                por el coleccionismo.
+            </p>
+        </div>
 
         @if (ViewBag.Id != null)
         {
@@ -20,57 +86,6 @@
         }
     </div>
 </section>
-
-<!-- CAROUSEL -->
-<div id="carruselHome" class="carousel slide mb-5 shadow rounded overflow-hidden" data-bs-ride="carousel">
-
-    <div class="carousel-indicators">
-        <button type="button" data-bs-target="#carruselHome" data-bs-slide-to="0"
-                class="active" aria-current="true" aria-label="Imagen 1"></button>
-        <button type="button" data-bs-target="#carruselHome" data-bs-slide-to="1"
-                aria-label="Imagen 2"></button>
-        <button type="button" data-bs-target="#carruselHome" data-bs-slide-to="2"
-                aria-label="Imagen 3"></button>
-    </div>
-
-    <div class="carousel-inner">
-
-        <div class="carousel-item active">
-            <img src="~/images/pokemonCarr01.png" class="d-block w-100" style="height:460px; object-fit:contain; background-color:#f8f9fa;" loading="lazy" alt="Cartas Pokémon">
-            <div class="carousel-caption bg-dark bg-opacity-50 p-3 rounded-3">
-                <h5 class="fw-bold">Colección Pokémon</h5>
-                <p>Explora cartas únicas y legendarias.</p>
-            </div>
-        </div>
-
-        <div class="carousel-item">
-            <img src="~/images/pokemonCarr02.png" class="d-block w-100" style="height:460px; object-fit:contain; background-color:#f8f9fa;" loading="lazy" alt="Usuarios activos">
-            <div class="carousel-caption bg-dark bg-opacity-50 p-3 rounded-3">
-                <h5 class="fw-bold">Usuarios activos</h5>
-                <p>Conoce a compradores y vendedores registrados.</p>
-            </div>
-        </div>
-
-        <div class="carousel-item">
-            <img src="~/images/pokemonCarr03.png" class="d-block w-100" style="height:460px; object-fit:contain; background-color:#f8f9fa;" loading="lazy" alt="Subastas en curso">
-            <div class="carousel-caption bg-dark bg-opacity-50 p-3 rounded-3">
-                <h5 class="fw-bold">Subastas en curso</h5>
-                <p>Participa en subastas y haz tus mejores pujas.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Controles -->
-    <button class="carousel-control-prev" type="button" data-bs-target="#carruselHome" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon"></span>
-        <span class="visually-hidden">Anterior</span>
-    </button>
-
-    <button class="carousel-control-next" type="button" data-bs-target="#carruselHome" data-bs-slide="next">
-        <span class="carousel-control-next-icon"></span>
-        <span class="visually-hidden">Siguiente</span>
-    </button>
-</div>
 
 <!-- ACCESOS RÁPIDOS -->
 <section class="container mb-5">
@@ -119,6 +134,8 @@
 
     </div>
 </section>
+
+</div>
 
 @section Scripts {
     <script>

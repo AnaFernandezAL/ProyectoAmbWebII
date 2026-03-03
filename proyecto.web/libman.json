@@ -3,13 +3,13 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "bootstrap@5.3.8",
-      "destination": "wwwroot/lib/bootstrap/"
-    },
-    {
       "provider": "jsdelivr",
       "library": "sweetalert2@11.10.4",
       "destination": "wwwroot/lib/sweetalert2/"
+    },
+    {
+      "library": "bootstrap@5.3.8",
+      "destination": "wwwroot/lib/bootstrap/"
     }
   ]
 }
