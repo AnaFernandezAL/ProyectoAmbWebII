@@ -15,7 +15,6 @@ namespace proyecto.Application.Services.Interfaces
         Task UpdateAsync(int id, CartaDTO dto);
         Task DeleteAsync(int id);
 
-        // Consultas adicionales
         Task<ICollection<CartaDTO>> FindByNameAsync(string nombre);
         Task<ICollection<CartaDTO>> GetCartasByCategoria(int categoriaId);
         Task<ICollection<CartaDTO>> GetCartasByEstado(int estadoId);

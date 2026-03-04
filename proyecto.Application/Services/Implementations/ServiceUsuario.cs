@@ -44,7 +44,7 @@ namespace proyecto.Application.Services.Implementations
 
             var dto = _mapper.Map<UsuarioDTO>(entity);
 
-            // 🔹 Campos calculados
+
             dto.CantidadSubastasCreadas = await _context.Subastas.CountAsync(s => s.VendedorId == id);
             dto.CantidadPujasRealizadas = await _context.Pujas.CountAsync(p => p.CompradorId == id);
 

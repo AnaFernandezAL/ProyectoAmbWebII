@@ -11,7 +11,7 @@ namespace proyecto.Application.DTOs
 {
     public class PujasDTO
     {
-        [DisplayName("Identificador")]
+        [DisplayName("Número de Puja")]
         public int PujaId { get; set; }
 
         [DisplayName("Identificador Subasta")]

@@ -29,7 +29,6 @@ namespace proyecto.Application.Services.Implementations
             var list = await _repository.ListAsync();
             var collection = _mapper.Map<ICollection<CartaDTO>>(list);
 
-            // 🔹 Aquí podrías calcular campos adicionales si lo requieres
             return collection;
         }
 

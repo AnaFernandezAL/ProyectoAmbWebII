@@ -220,3 +220,24 @@ body {
 .contenedor-carrusel {
     padding: 0;
 }
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.custom-table thead {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.custom-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transition: 0.3s;
+}
+
+.custom-table td,
+.custom-table th {
+    border-color: rgba(255, 255, 255, 0.1);
+}

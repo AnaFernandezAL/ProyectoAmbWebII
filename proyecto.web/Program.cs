@@ -79,6 +79,7 @@ builder.Services.AddAutoMapper(config =>
     config.AddProfile<ImagenCartaProfile>();
     config.AddProfile<EstadoCartaProfile>();
     config.AddProfile<CartaCategoriaProfile>();
+    config.AddProfile<PujasProfile>();
 });
 
 // =======================

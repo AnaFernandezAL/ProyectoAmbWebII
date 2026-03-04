@@ -16,9 +16,9 @@ namespace proyecto.Application.Services.Interfaces
         Task UpdateAsync(int id, SubastaDTO dto);
         Task DeleteAsync(int id);
 
-        // Subastas abiertas
+        // Subastas activas
         Task<ICollection<SubastaDTO>> ListActivasAsync();
-        // Subastas cerradas
+        // Subastas finalizadas
         Task<ICollection<SubastaDTO>> ListFinalizadasAsync();   
     }
 }

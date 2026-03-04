@@ -40,6 +40,7 @@ namespace proyecto.Infraestructure.Repository.Implementations
                .Include(p => p.Comprador)
                .Include(p => p.Subasta)
                .ThenInclude(s => s.Carta)
+               .OrderByDescending(p => p.MontoOfertado)
                .AsNoTracking()
                .ToListAsync();
         }

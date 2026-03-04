@@ -16,7 +16,6 @@ namespace proyecto.Web.Controllers
             _serviceSubasta = serviceSubasta;
         }
 
-        // GET: SubastasController/Index
         public async Task<IActionResult> Index(int? page)
         {
             int pageNumber = page ?? 1;
@@ -28,7 +27,6 @@ namespace proyecto.Web.Controllers
             return View(pagedSubastas);
         }
 
-        // GET: SubastasController/Activas
         public async Task<IActionResult> Activas(int? page)
         {
             int pageNumber = page ?? 1;
@@ -40,7 +38,6 @@ namespace proyecto.Web.Controllers
             return View(pagedActivas);
         }
 
-        // GET: SubastasController/Finalizadas
         public async Task<IActionResult> Finalizadas(int? page)
         {
             int pageNumber = page ?? 1;
@@ -52,7 +49,6 @@ namespace proyecto.Web.Controllers
             return View(pagedFinalizadas);
         }
 
-        // GET: SubastasController/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -68,8 +64,6 @@ namespace proyecto.Web.Controllers
 
             return View(subasta);
         }
-
-        // CRUD opcional (si se requiere crear/editar subastas desde la web)
         public IActionResult Create()
         {
             return View();

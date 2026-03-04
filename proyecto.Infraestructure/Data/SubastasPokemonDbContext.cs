@@ -74,7 +74,6 @@ public partial class SubastasPokemonDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Cartas__Vendedor__5070F446");
 
-            // Relación muchos-a-muchos usando la clase CartaCategoria
             entity.HasMany(d => d.Categoria)
                 .WithMany(p => p.Carta)
                 .UsingEntity<CartaCategoria>(

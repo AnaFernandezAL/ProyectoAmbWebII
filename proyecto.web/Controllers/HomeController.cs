@@ -31,9 +31,6 @@ namespace proyecto.Web.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        // ============================================================
-        //            MÉTODO MANEJO DE ERRORES
-        // ============================================================
         [HttpGet]
         public IActionResult ErrorHandler(string? messagesJson)
         {

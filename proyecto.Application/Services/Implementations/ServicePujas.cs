@@ -38,9 +38,11 @@ namespace proyecto.Application.Services.Implementations
             throw new NotImplementedException();
         }
 
-        public Task<ICollection<PujasDTO>> FindByIDSubastaAsync(int subastaId)
+        public async Task<ICollection<PujasDTO>> FindByIDSubastaAsync(int subastaId)
         {
-            throw new NotImplementedException();
+            var list = await _repository.FindByIDSubastaAsync(subastaId); 
+            var collection = _mapper.Map<ICollection<PujasDTO>>(list); 
+            return collection;
         }
 
         public async Task<ICollection<PujasDTO>> ListAsync()
