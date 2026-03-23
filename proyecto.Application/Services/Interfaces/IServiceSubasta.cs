@@ -19,7 +19,8 @@ namespace proyecto.Application.Services.Interfaces
         // Subastas activas
         Task<ICollection<SubastaDTO>> ListActivasAsync();
         // Subastas finalizadas
-        Task<ICollection<SubastaDTO>> ListFinalizadasAsync();   
+        Task<ICollection<SubastaDTO>> ListFinalizadasAsync();
+        Task<int> GetNextNumberOrden();
     }
 }
 

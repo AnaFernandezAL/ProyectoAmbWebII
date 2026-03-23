@@ -95,5 +95,11 @@ namespace proyecto.Application.Services.Implementations
 
             return collection;
         }
+
+        public async Task<int> GetNextNumberOrden()
+        {
+            int nextReceipt = await _repository.GetNextNumberOrden();
+            return nextReceipt + 1;
+        }
     }
 }

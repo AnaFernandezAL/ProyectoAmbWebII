@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using proyecto.Application.DTOs;
 using proyecto.Application.Services.Interfaces;
+using proyecto.web.Util;
 using X.PagedList;
 using X.PagedList.Extensions;
 
@@ -15,86 +16,141 @@ namespace proyecto.Web.Controllers
             _serviceUsuario = serviceUsuario;
         }
 
-        public async Task<IActionResult> Index(int? page)
+        // GET: UsuarioController
+        [HttpGet]
+        public async Task<ActionResult> Index(int? page)
         {
+            var collection = await _serviceUsuario.ListAsync();
+
             int pageNumber = page ?? 1;
             int pageSize = 5;
 
-            var usuarios = await _serviceUsuario.ListAsync();
-            var pagedUsuarios = usuarios.ToPagedList(pageNumber, pageSize);
-
-            return View(pagedUsuarios);
+            return View(collection.ToPagedList(pageNumber, pageSize));
         }
 
-        public async Task<IActionResult> Details(int? id)
+        // GET: UsuarioController/Details/5
+        public async Task<ActionResult> Details(int? id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
+                if (id == null)
+                {
+                    TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
+                       "Usuario no encontrado",
+                       "No existe un Usuario sin ID",
+                       SweetAlertMessageType.error
+                   );
+                    return RedirectToAction("Index");
+                }
 
-            var usuario = await _serviceUsuario.FindByIdAsync(id.Value);
-            if (usuario == null)
+                var usuario = await _serviceUsuario.FindByIdAsync(id.Value);
+                if (usuario == null)
+                {
+                    throw new Exception("Usuario no existente");
+                }
+
+                ViewBag.Notificacion = SweetAlertHelper.CrearNotificacion(
+                   "Detalle del Usuario",
+                   $"Mostrando información del Usuario: {usuario.NombreCompleto}",
+                   SweetAlertMessageType.info
+               );
+                return View(usuario);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                throw new Exception(ex.Message);
             }
-
-            return View(usuario);
         }
-        public IActionResult Create()
+
+        // GET: UsuarioController/Create
+        public ActionResult Create()
         {
-            return View();
+            return View(new UsuarioDTO());
         }
 
+        // POST: UsuarioController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(UsuarioDTO dto)
+        public async Task<ActionResult> Create(UsuarioDTO dto)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                await _serviceUsuario.AddAsync(dto);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(dto);
-        }
-        public async Task<IActionResult> Edit(int id)
-        {
-            var usuario = await _serviceUsuario.FindByIdAsync(id);
-            if (usuario == null)
-            {
-                return NotFound();
-            }
-            return View(usuario);
-        }
+                var errores = string.Join("<br>",
+                    ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)
+                );
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, UsuarioDTO dto)
-        {
-            if (ModelState.IsValid)
-            {
-                await _serviceUsuario.UpdateAsync(id, dto);
-                return RedirectToAction(nameof(Index));
+                ViewBag.Notificacion = SweetAlertHelper.CrearNotificacion(
+                    "Errores de validación",
+                    $"El formulario contiene errores:<br>{errores}",
+                    SweetAlertMessageType.warning
+                );
+                return View(dto);
             }
-            return View(dto);
-        }
 
-        public async Task<IActionResult> Delete(int id)
-        {
-            var usuario = await _serviceUsuario.FindByIdAsync(id);
-            if (usuario == null)
-            {
-                return NotFound();
-            }
-            return View(usuario);
-        }
+            await _serviceUsuario.AddAsync(dto);
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            await _serviceUsuario.DeleteAsync(id);
+            TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
+               "Usuario creado correctamente",
+               $"El usuario {dto.NombreCompleto} fue registrado exitosamente.",
+               SweetAlertMessageType.success
+           );
             return RedirectToAction(nameof(Index));
         }
+
+        // GET: UsuarioController/Edit/5
+        public async Task<ActionResult> Edit(int id)
+        {
+            var usuario = await _serviceUsuario.FindByIdAsync(id);
+            if (usuario == null) return NotFound();
+
+            return View(usuario);
+        }
+
+        // POST: UsuarioController/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(int id, UsuarioDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errores = string.Join("<br>",
+                    ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)
+                );
+
+                ViewBag.Notificacion = SweetAlertHelper.CrearNotificacion(
+                    "Errores de validación",
+                    $"El formulario contiene errores:<br>{errores}",
+                    SweetAlertMessageType.warning
+                );
+                return View(dto);
+            }
+
+            await _serviceUsuario.UpdatePerfilAsync(id, dto);
+
+            TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
+               "Usuario actualizado",
+               $"El usuario {dto.NombreCompleto} ha sido modificado exitosamente.",
+               SweetAlertMessageType.success
+           );
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeState(int id, int nuevoEstadoId)
+        {
+            await _serviceUsuario.CambiarEstadoAsync(id, nuevoEstadoId);
+
+            string accion = nuevoEstadoId == 1 ? "activado" : "bloqueado";
+
+            TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
+               $"Usuario {accion}",
+               $"El usuario ha sido {accion} correctamente.",
+               nuevoEstadoId == 1 ? SweetAlertMessageType.success : SweetAlertMessageType.warning
+            );
+
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

@@ -43,8 +43,6 @@ namespace proyecto.Application.Services.Implementations
             if (entity == null) return null;
 
             var dto = _mapper.Map<UsuarioDTO>(entity);
-
-
             dto.CantidadSubastasCreadas = await _context.Subastas.CountAsync(s => s.VendedorId == id);
             dto.CantidadPujasRealizadas = await _context.Pujas.CountAsync(p => p.CompradorId == id);
 
@@ -54,6 +52,10 @@ namespace proyecto.Application.Services.Implementations
         public async Task<int> AddAsync(UsuarioDTO dto)
         {
             var entity = _mapper.Map<Usuarios>(dto);
+            entity.FechaRegistro = System.DateTime.Now;
+            entity.EstadoUsuarioId = 1;
+            entity.Notificado = false;
+
             return await _repository.AddAsync(entity);
         }
 
@@ -66,7 +68,11 @@ namespace proyecto.Application.Services.Implementations
 
         public async Task DeleteAsync(int id)
         {
-            await _repository.DeleteAsync(id);
+            var entity = await _repository.FindByIdAsync(id);
+            if (entity == null) throw new KeyNotFoundException($"Usuario {id} no existe");
+
+            entity.EstadoUsuarioId = 2;
+            await _repository.UpdateAsync(entity);
         }
 
         public async Task<ICollection<UsuarioDTO>> FindByNameAsync(string nombre)
@@ -95,6 +101,26 @@ namespace proyecto.Application.Services.Implementations
             }
 
             return collection;
+        }
+
+        public async Task UpdatePerfilAsync(int id, UsuarioDTO dto)
+        {
+            var entity = await _repository.FindByIdAsync(id);
+            if (entity == null) throw new KeyNotFoundException($"Usuario {id} no existe");
+
+            entity.NombreCompleto = dto.NombreCompleto;
+            entity.CorreoElectronico = dto.Correo;
+
+            await _repository.UpdateAsync(entity);
+        }
+
+        public async Task CambiarEstadoAsync(int id, int nuevoEstadoId)
+        {
+            var entity = await _repository.FindByIdAsync(id);
+            if (entity == null) throw new KeyNotFoundException($"Usuario {id} no existe");
+
+            entity.EstadoUsuarioId = nuevoEstadoId;
+            await _repository.UpdateAsync(entity);
         }
     }
 }

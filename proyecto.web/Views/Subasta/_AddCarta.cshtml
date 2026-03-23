@@ -1,0 +1,151 @@
+﻿@using Libreria.Web.ViewModels
+@model ViewModelInput
+
+<div class="row" id="MyAddCarta">
+
+    <!-- IZQUIERDA -->
+    <div class="col-md-4">
+
+        <div class="mb-3">
+            <label class="form-label">Carta</label>
+
+            <input id="IdCartaModal"
+                   type="text"
+                   autocomplete="off"
+                   class="form-control form-control-sm"
+                   placeholder="Escriba el nombre de la carta..." />
+
+            <div class="form-text text-secondary mt-1">
+                Seleccione una carta activa para subastar.
+            </div>
+        </div>
+
+        <div class="d-grid gap-2">
+            <button type="button"
+                    class="btn btn-success btn-sm"
+                    onclick="confirmarCarta()">
+                Seleccionar carta
+            </button>
+        </div>
+
+    </div>
+
+    <!-- IMAGEN -->
+    <div class="col-md-4 text-center">
+        <img src="/Images/nophoto.jpg"
+             class="img-fluid rounded border"
+             style="max-height: 220px;"
+             id="ImgCarta">
+    </div>
+
+    <!-- INFO -->
+    <div class="col-md-4">
+        <p id="CartaSelect" class="form-label fw-bold">Carta: -</p>
+        <p id="DescripcionSelect" class="form-label">Descripción: -</p>
+        <p id="EstadoCartaSelect" class="form-label fw-bold">Estado: -</p>
+    </div>
+
+</div>
+
+<script>
+
+    let cartaSeleccionada = null;
+
+    // ============================================
+    // AUTOCOMPLETE CARTA
+    // ============================================
+    $("#IdCartaModal").autocomplete({
+
+        source: function (request, response) {
+
+            // Reset visual
+            $("#ImgCarta").attr("src", "/Images/nophoto.jpg");
+            $("#CartaSelect").html("Carta: -");
+            $("#DescripcionSelect").html("Descripción: -");
+            $("#EstadoCartaSelect").html("Estado: -");
+
+            $.ajax({
+                type: "GET",
+                url: '/Carta/GetCartaByName',
+                dataType: "json",
+                data: { filtro: request.term },
+                success: function (data) {
+
+                    response($.map(data, function (item) {
+
+                        return {
+                            label: item.nombre + (item.activa ? "" : " (INACTIVA)"),
+                            value: item.cartaId,
+                            data: item
+                        };
+
+                    }));
+                },
+                error: function () {
+                    Swal.fire("Error", "No se pudieron cargar las cartas", "error");
+                }
+            });
+        },
+
+        select: function (event, ui) {
+
+            const carta = ui.item.data;
+            cartaSeleccionada = carta;
+
+            // Mostrar info
+            $("#IdCartaModal").val(carta.cartaId);
+            $("#CartaSelect").html("Carta: " + carta.nombre);
+            $("#DescripcionSelect").html("Descripción: " + (carta.descripcion ?? "Sin descripción"));
+
+            // Estado con color
+            if (carta.activa) {
+                $("#EstadoCartaSelect").html("<span class='text-success'>Activa</span>");
+            } else {
+                $("#EstadoCartaSelect").html("<span class='text-danger'>Inactiva</span>");
+            }
+
+            // Imagen
+            if (carta.imagen) {
+                $("#ImgCarta").attr("src", "data:image/jpeg;base64," + carta.imagen);
+            }
+
+            return false;
+        }
+    });
+
+    // ============================================
+    // CONFIRMAR SELECCIÓN
+    // ============================================
+    function confirmarCarta() {
+
+        if (!cartaSeleccionada) {
+            Swal.fire("Error", "Debe seleccionar una carta", "error");
+            return;
+        }
+
+        if (!cartaSeleccionada.activa) {
+            Swal.fire({
+                icon: "error",
+                title: "Carta no válida",
+                text: "No se pueden subastar cartas inactivas"
+            });
+            return;
+        }
+
+        // Enviar a vista principal
+        seleccionarCarta(
+            cartaSeleccionada.cartaId,
+            cartaSeleccionada.nombre,
+            cartaSeleccionada.descripcion,
+            cartaSeleccionada.imagen
+        );
+
+        Swal.fire({
+            icon: "success",
+            title: "Carta seleccionada",
+            timer: 800,
+            showConfirmButton: false
+        });
+    }
+
+</script>

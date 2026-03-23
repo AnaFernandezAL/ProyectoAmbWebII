@@ -18,6 +18,7 @@ namespace proyecto.Infraestructure.Repository.Implementations
         {
             _context = context;
         }
+
         public async Task<ICollection<Usuarios>> ListAsync()
         {
             return await _context.Usuarios
@@ -37,22 +38,30 @@ namespace proyecto.Infraestructure.Repository.Implementations
 
         public async Task<int> AddAsync(Usuarios entity)
         {
-            _context.Usuarios.Add(entity);
-            return await _context.SaveChangesAsync();
+            await _context.Usuarios.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity.UsuarioId;
         }
 
         public async Task UpdateAsync(Usuarios entity)
         {
-            _context.Usuarios.Update(entity);
+            if (_context.Entry(entity).State == EntityState.Detached)
+            {
+                _context.Attach(entity);
+            }
+
+            _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 
+        // Eliminación lógica: marcar como bloqueado
         public async Task DeleteAsync(int id)
         {
             var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario != null)
             {
-                _context.Usuarios.Remove(usuario);
+                usuario.EstadoUsuarioId = 2; // Bloqueado
+                _context.Entry(usuario).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
         }

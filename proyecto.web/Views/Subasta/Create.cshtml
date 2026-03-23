@@ -1,0 +1,225 @@
+﻿@using Libreria.Web.ViewModels
+@model SubastaCreateViewModel
+
+@{
+    ViewData["Title"] = "Nueva Subasta";
+}
+
+<style>
+    ul.ui-autocomplete {
+        z-index: 1100;
+    }
+</style>
+
+<div class="container">
+    <h2 class="mb-3">Nueva Subasta</h2>
+
+    <form id="createSubastaForm" asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">Datos de la Subasta</span>
+                <button type="button"
+                        class="btn btn-outline-secondary btn-sm"
+                        onclick="clearForm()">
+                    Nueva subasta
+                </button>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+
+                    <!-- IZQUIERDA: DATOS -->
+                    <div class="col-md-4 border-end">
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="subasta.FechaInicio"></label>
+                            <input asp-for="subasta.FechaInicio" type="datetime-local" class="form-control form-control-sm" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="subasta.FechaCierre"></label>
+                            <input asp-for="subasta.FechaCierre" type="datetime-local" class="form-control form-control-sm" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="subasta.PrecioBase"></label>
+                            <input asp-for="subasta.PrecioBase" class="form-control form-control-sm" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="subasta.IncrementoMinimo"></label>
+                            <input asp-for="subasta.IncrementoMinimo" class="form-control form-control-sm" />
+                        </div>
+
+                        <!-- BOTÓN -->
+                        <div class="d-grid gap-2">
+                            <button type="button"
+                                    class="btn btn-success btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalCartas">
+                                Buscar carta
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <!-- DERECHA: CARTA SELECCIONADA -->
+                    <div class="col-md-8">
+
+                        <div class="card h-100">
+                            <div class="card-header">
+                                Carta seleccionada
+                            </div>
+
+                            <div class="card-body text-center">
+
+                                <!-- ID OCULTO -->
+                                <input type="hidden" asp-for="subasta.CartaId" id="CartaId" />
+
+                                <!-- IMAGEN -->
+                                <img src="/Images/nophoto.jpg"
+                                     id="CartaImagen"
+                                     class="img-fluid rounded border mb-3"
+                                     style="max-height: 250px;" />
+
+                                <!-- NOMBRE -->
+                                <h5 id="CartaNombre">Ninguna carta seleccionada</h5>
+
+                                <!-- DESCRIPCIÓN -->
+                                <p id="CartaDescripcion" class="text-muted">
+                                    Seleccione una carta para ver su información
+                                </p>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card-footer text-end">
+                <button type="submit" class="btn btn-primary">
+                    Crear Subasta
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    Regresar
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="modalCartas" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Seleccionar carta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                @await Html.PartialAsync("_AddCarta", new ViewModelInput())
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+
+        function getToken() {
+            return document.querySelector('#createSubastaForm input[name="__RequestVerificationToken"]').value;
+        }
+
+        function clearForm() {
+            const form = document.getElementById("createSubastaForm");
+            form.reset();
+
+            $("#CartaId").val("");
+            $("#CartaNombre").html("Ninguna carta seleccionada");
+            $("#CartaDescripcion").html("Seleccione una carta para ver su información");
+            $("#CartaImagen").attr("src", "/Images/nophoto.jpg");
+
+            Swal.fire({
+                icon: 'info',
+                title: 'Formulario reiniciado'
+            });
+        }
+
+        // ============================================
+        // GUARDAR SUBASTA
+        // ============================================
+        document.getElementById("createSubastaForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const form = this;
+            const token = getToken();
+            const formData = new FormData(form);
+
+            // Validación básica
+            if (!$("#CartaId").val()) {
+                Swal.fire("Error", "Debe seleccionar una carta", "error");
+                return;
+            }
+
+            try {
+                const response = await fetch(form.action, {
+                    method: "POST",
+                    headers: { "RequestVerificationToken": token },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    Swal.fire("Error", errorText, "error");
+                    return;
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Subasta creada',
+                        timer: 1200,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = result.redirectUrl;
+                    });
+                }
+
+            } catch (error) {
+                Swal.fire("Error", error.message, "error");
+            }
+        });
+
+        // ============================================
+        // RECIBIR CARTA DEL MODAL
+        // ============================================
+        function seleccionarCarta(id, nombre, descripcion, imagen) {
+
+            $("#CartaId").val(id);
+            $("#CartaNombre").html(nombre);
+            $("#CartaDescripcion").html(descripcion ?? "Sin descripción");
+
+            if (imagen) {
+                $("#CartaImagen").attr("src", "data:image/jpeg;base64," + imagen);
+            } else {
+                $("#CartaImagen").attr("src", "/Images/nophoto.jpg");
+            }
+
+            $("#modalCartas").modal('hide');
+        }
+
+    </script>
+}

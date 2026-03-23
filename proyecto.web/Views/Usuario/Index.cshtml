@@ -13,9 +13,6 @@
 
     <div class="d-flex align-items-center gap-2">
         <span class="badge text-bg-secondary" title="Total de usuarios">@Model?.TotalItemCount</span>
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-1"></i> Nuevo usuario
-        </a>
     </div>
 </div>
 
@@ -34,10 +31,7 @@
                     <i class="bi bi-person-x"></i>
                 </div>
                 <h2 class="h5">No hay usuarios registrados</h2>
-                <p class="text-muted mb-3">Crea el primer usuario para iniciar el sistema.</p>
-                <a asp-action="Create" class="btn btn-primary">
-                    <i class="bi bi-plus-lg me-1"></i> Crear usuario
-                </a>
+                <p class="text-muted mb-3">Actualmente no existen usuarios en el sistema.</p>
             </div>
         }
         else
@@ -50,7 +44,7 @@
                             <th scope="col" class="ps-3">Nombre completo</th>
                             <th scope="col">Rol</th>
                             <th scope="col">Estado</th>
-                            <th scope="col" class="text-end pe-3" style="width: 260px;">Acciones</th>
+                            <th scope="col" class="text-end pe-3" style="width: 300px;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -79,12 +73,19 @@
                                             <span class="d-none d-lg-inline ms-1">Editar</span>
                                         </a>
 
-                                        <a asp-action="Delete" asp-route-id="@usuario.UsuarioId"
-                                           class="btn btn-outline-danger btn-sm"
-                                           title="Eliminar">
-                                            <i class="bi bi-trash"></i>
-                                            <span class="d-none d-lg-inline ms-1">Eliminar</span>
-                                        </a>
+                                        <!-- Botón dinámico Bloquear/Activar -->
+                                        <form asp-action="ChangeState" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@usuario.UsuarioId" />
+                                            <input type="hidden" name="nuevoEstadoId"
+                                                   value="@(usuario.EstadoUsuario?.Nombre == "Activo" ? 2 : 1)" />
+                                            <button type="submit" class="btn btn-outline-warning btn-sm"
+                                                    title="@(usuario.EstadoUsuario?.Nombre == "Activo" ? "Bloquear" : "Activar")">
+                                                <i class="bi @(usuario.EstadoUsuario?.Nombre == "Activo" ? "bi-lock" : "bi-unlock")"></i>
+                                                <span class="d-none d-lg-inline ms-1">
+                                                    @(usuario.EstadoUsuario?.Nombre == "Activo" ? "Bloquear" : "Activar")
+                                                </span>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>

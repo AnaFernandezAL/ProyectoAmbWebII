@@ -47,6 +47,24 @@ var builder = WebApplication.CreateBuilder(args);
 // Integrar Serilog al host
 builder.Host.UseSerilog(Log.Logger);
 
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
+// Cache en memoria (requerido por Session)
+builder.Services.AddDistributedMemoryCache();
+
+//Registrar Session con opciones
+builder.Services.AddSession(options =>
+{
+    // Tiempo máximo sin actividad antes de expirar la sesión
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+
+    // Opciones de la cookie de sesión
+    options.Cookie.HttpOnly = true;          // No accesible desde JS
+    options.Cookie.IsEssential = true;       // Necesaria aunque haya consentimiento de cookies
+    options.Cookie.Name = ".Libreria.Session";
+});
+
 // =======================
 // Configurar Dependency Injection
 // =======================

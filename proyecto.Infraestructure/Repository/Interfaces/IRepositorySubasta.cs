@@ -21,6 +21,7 @@ namespace proyecto.Infraestructure.Repository.Interfaces
 
         Task<ICollection<Subastas>> ListActivasAsync();
         Task<ICollection<Subastas>> ListFinalizadasAsync();
+        Task<int> GetNextNumberOrden();
     }
 }
 

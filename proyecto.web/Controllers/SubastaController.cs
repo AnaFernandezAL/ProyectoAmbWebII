@@ -1,15 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using proyecto.Application.Services.Interfaces;
 using proyecto.Application.DTOs;
+using proyecto.Application.Services.Implementations;
+using proyecto.Application.Services.Interfaces;
+using proyecto.Infraestructure.Models;
+using proyecto.web.Models;
+using System.Threading.Tasks;
 using X.PagedList;
 using X.PagedList.Extensions;
-using System.Threading.Tasks;
 
 namespace proyecto.Web.Controllers
 {
     public class SubastaController : Controller
     {
         private readonly IServiceSubasta _serviceSubasta;
+        private readonly IServiceUsuario _serviceUsuario;
+        private readonly IServiceCarta _serviceCarta;
+
+        // Clave única para almacenar el carrito en Session
+        private const string CartSessionKey = "CartShopping";
 
         public SubastaController(IServiceSubasta serviceSubasta)
         {
@@ -64,21 +72,80 @@ namespace proyecto.Web.Controllers
 
             return View(subasta);
         }
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var nextReceiptNumber = await _serviceSubasta.GetNextNumberOrden();
+
+            var vm = new SubastaCreateViewModel
+            {
+                subasta = new SubastaDTO
+                {
+                    SubastaId = nextReceiptNumber
+                },
+                NombreCliente = "-"
+            };
+
+            return View(vm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(SubastaDTO dto)
+        public async Task<IActionResult> Create(SubastaCreateViewModel vm)
         {
-            if (ModelState.IsValid)
+            try
             {
-                await _serviceSubasta.AddAsync(dto);
-                return RedirectToAction(nameof(Index));
+                // Validar modelo básico
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Los datos de la orden no son válidos. Verifique el cliente y la información general.");
+                }
+
+
+
+                // Validar que el cliente exista
+                var vendedor = await _serviceUsuario.FindByIdAsync(vm.subasta.Vendedor.UsuarioId);
+                if (vendedor is null)
+                {
+                    return BadRequest("El vendedor indicado no existe.");
+                }
+
+                var carta = await _serviceCarta.FindByIdAsync(vm.subasta.Carta.CartaId);
+                if (carta is null)
+                {
+                    return BadRequest("La carta indicada no existe.");
+                }
+
+                // Completar y validar algunos datos de la subasta 
+                var subasta = vm.subasta;
+
+                if (subasta.Carta is null || subasta.EstadoSubasta is null || subasta.Vendedor is null)
+                {
+                    return BadRequest("Faltan datos obligatorios.");
+                }
+
+                subasta.SubastaId = 0;
+                subasta.FechaInicio = subasta.FechaInicio;
+                subasta.FechaCierre = subasta.FechaCierre;
+                subasta.PrecioBase = subasta.PrecioBase;
+                subasta.IncrementoMinimo = subasta.IncrementoMinimo;
+                subasta.EstadoSubastaId = 1;
+                subasta.CartaId = subasta.Carta.CartaId;
+                subasta.VendedorId = 1;
+
+                await _serviceSubasta.AddAsync(subasta);
+
+                // Respuesta JSON para que el JS de la vista redireccione amigablemente
+                return Json(new
+                {
+                    success = true,
+                    redirectUrl = Url.Action(nameof(Index))
+                });
             }
-            return View(dto);
+            catch (Exception ex)
+            {
+                // registrar el error (logging).
+                return BadRequest($"Error al guardar la orden: {ex.Message}");
+            }
         }
 
         public async Task<IActionResult> Edit(int id)
