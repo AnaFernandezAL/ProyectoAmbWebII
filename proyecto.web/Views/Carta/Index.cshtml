@@ -45,11 +45,11 @@
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                 @foreach (var carta in Model)
                 {
-                    var imagenPrincipal = carta.ImagenesCarta?.FirstOrDefault(i => i.EsPrincipal)?.UrlImagen;
+                    var imagenPrincipal = carta.ImagenesCartaNavigation?.FirstOrDefault(i => i.EsPrincipal)?.UrlImagen;
 
                     <div class="col">
                         <div class="card h-100 shadow-sm">
-                            <!-- Contenedor de imagen con fondo y espaciado -->
+                            <!-- Imagen -->
                             <div class="d-flex align-items-center justify-content-center bg-light"
                                  style="height:220px; padding:10px; background-color:#f0f8ff; border-bottom:1px solid #ddd;">
                                 @if (!string.IsNullOrEmpty(imagenPrincipal))
@@ -61,18 +61,21 @@
                                 {
                                     <i class="bi bi-image display-4 text-muted"></i>
                                 }
-                            </div>
+                        </div>
 
-                            <!-- Información de la carta -->
-                            <div class="card-body">
-                                <h5 class="card-title fw-bold">@carta.NombreCarta</h5>
+                        <!-- Información -->
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">@carta.NombreCarta</h5>
                             <p class="card-text mb-1">
                                 <b>Categorías:</b>
-                                @(carta.CartaCategoria != null && carta.CartaCategoria.Any()? string.
-                                Join(", ", carta.CartaCategoria.Select(cc => cc.Categoria.NombreCategoria)): "Sin categoría")</p>
-                                <p class="card-text mb-1"><b>Condición:</b> @carta.Condicion</p>
-                                <p class="card-text mb-1"><b>Estado:</b> @carta.EstadoCarta?.NombreEstado</p>
-                            </div>
+                                @(carta.CartaCategoria != null && carta.CartaCategoria.Any()
+                                                            ? string.Join(", ", carta.CartaCategoria.Select(cc => cc.Categoria.NombreCategoria))
+                                                            : "Sin categoría")
+                        </p>
+                        <p class="card-text mb-1"><b>Condición:</b> @carta.Condicion</p>
+                        <p class="card-text mb-1"><b>Estado:</b> @carta.EstadoCarta?.NombreEstado</p>
+                        <p class="card-text mb-1"><b>Propietario:</b> @carta.Vendedor?.NombreCompleto</p>
+                    </div>
 
                             <!-- Acciones -->
                             <div class="card-footer bg-body text-end">
@@ -87,19 +90,38 @@
                                         <i class="bi bi-pencil-square"></i>
                                         <span class="d-none d-lg-inline ms-1">Editar</span>
                                     </a>
-                                    <a asp-action="Delete" asp-route-id="@carta.CartaId"
-                                       class="btn btn-outline-danger btn-sm" title="Eliminar">
-                                        <i class="bi bi-trash"></i>
-                                        <span class="d-none d-lg-inline ms-1">Eliminar</span>
-                                    </a>
+
+                            @if (carta.EstadoCartaId == 1)
+                                    {
+                                        <!-- Activo -->
+                                        <form asp-action="ChangeState" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@carta.CartaId" />
+                                            <input type="hidden" name="nuevoEstadoId" value="2" />
+                                            <button type="submit" class="btn btn-outline-warning btn-sm" title="Desactivar">
+                                                <i class="bi bi-slash-circle"></i>
+                                                <span class="d-none d-lg-inline ms-1">Desactivar</span>
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <!-- Inactivo -->
+                                        <form asp-action="ChangeState" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@carta.CartaId" />
+                                            <input type="hidden" name="nuevoEstadoId" value="1" />
+                                            <button type="submit" class="btn btn-outline-success btn-sm" title="Activar">
+                                                <i class="bi bi-check-circle"></i>
+                                                <span class="d-none d-lg-inline ms-1">Activar</span>
+                                            </button>
+                                        </form>
+                                    }
                                 </div>
                             </div>
                         </div>
-
                     </div>
-                    }
-                    </div>
-                    }
+                }
+            </div>
+        }
     </div>
 
     <!-- Total y paginación -->

@@ -13,6 +13,7 @@ public partial class SubastasPokemonDbContext : DbContext
     }
 
     public virtual DbSet<Cartas> Cartas { get; set; }
+    public virtual DbSet<CartaCategoria> CartaCategoria { get; set; }
 
     public virtual DbSet<Categorias> Categorias { get; set; }
 

@@ -5,49 +5,56 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace proyecto.Application.DTOs
 {
     public record CartaDTO
     {
-        [DisplayName("Identificador Carta")]
+        // Identificador
         public int CartaId { get; set; }
 
-        [DisplayName("Nombre de la Carta")]
+        // Datos principales
         [Required(ErrorMessage = "{0} es requerido")]
         public string NombreCarta { get; set; } = string.Empty;
 
-        [DisplayName("Descripción")]
-        public string? Descripcion { get; set; }
+        [Required(ErrorMessage = "{0} es requerido")]
+        [MinLength(20, ErrorMessage = "La descripción debe tener al menos 20 caracteres")]
+        public string Descripcion { get; set; } = string.Empty;
 
-        [DisplayName("Condición")]
         [Required(ErrorMessage = "{0} es requerido")]
         public string Condicion { get; set; } = string.Empty;
 
-        [DisplayName("Estado")]
         [Required(ErrorMessage = "{0} es requerido")]
-        public EstadoCartaDTO EstadoCarta { get; set; } = new();
+        public string Edicion { get; set; } = string.Empty;
 
-        [DisplayName("Fecha de Registro")]
+        [Required(ErrorMessage = "{0} es requerido")]
+        public string Rareza { get; set; } = string.Empty;
+
+        // Estado y vendedor
+        public int EstadoCartaId { get; set; }
+        public int VendedorId { get; set; }
         public DateTime? FechaRegistro { get; set; }
 
-        [DisplayName("Edición")]
-        public string? Edicion { get; set; }
+        // Para creación
+        [Required(ErrorMessage = "Debe seleccionar al menos una categoría")]
+        public List<int> CategoriasSeleccionadas { get; set; } = new();
 
-        [DisplayName("Rareza")]
-        public string? Rareza { get; set; }
+        [Required(ErrorMessage = "Debe subir al menos una imagen")]
+        public List<IFormFile> ImagenesCarta { get; set; } = new();
+        public int ImagenPrincipalIndex { get; set; }
 
-        [DisplayName("Propietario")]
-        [Required(ErrorMessage = "{0} es requerido")]
-        public UsuarioDTO Vendedor { get; set; } = new();
-
-        [DisplayName("Categorías asignadas")]
+        // Para visualización
         public ICollection<CartaCategoriaDTO> CartaCategoria { get; set; } = new List<CartaCategoriaDTO>();
-
-        [DisplayName("Imágenes")]
-        public ICollection<ImagenCartaDTO> ImagenesCarta { get; set; } = new List<ImagenCartaDTO>();
-
-        [DisplayName("Subastas")]
+        public ICollection<ImagenCartaDTO> ImagenesCartaNavigation { get; set; } = new List<ImagenCartaDTO>();
         public ICollection<SubastaDTO> Subastas { get; set; } = new List<SubastaDTO>();
+
+        public EstadoCartaDTO? EstadoCarta { get; set; }
+        public UsuarioDTO? Vendedor { get; set; }
     }
 }

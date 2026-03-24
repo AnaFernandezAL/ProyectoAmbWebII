@@ -69,13 +69,14 @@
                                     <div class="fw-semibold">@subasta.Carta?.NombreCarta</div>
                                 </td>
                                 <td>
-                                    @if (subasta.Carta?.ImagenesCarta != null && subasta.Carta.ImagenesCarta.Any())
+                                    @if (subasta.Carta?.ImagenesCartaNavigation != null && subasta.Carta.ImagenesCartaNavigation.Any())
                                     {
-                                        <img src="@subasta.Carta.ImagenesCarta.First().UrlImagen"
+                                        <img src="@subasta.Carta.ImagenesCartaNavigation.First().UrlImagen"
                                              alt="@subasta.Carta.NombreCarta"
                                              class="img-thumbnail"
                                              style="max-height:80px;" />
                                     }
+
                                     else
                                     {
                                         <span class="text-muted">Sin imagen</span>

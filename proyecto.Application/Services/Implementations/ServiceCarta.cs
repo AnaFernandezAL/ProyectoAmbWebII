@@ -55,11 +55,6 @@ namespace proyecto.Application.Services.Implementations
             await _repository.UpdateAsync(entity);
         }
 
-        public async Task DeleteAsync(int id)
-        {
-            await _repository.DeleteAsync(id);
-        }
-
         public async Task<ICollection<CartaDTO>> FindByNameAsync(string nombre)
         {
             var list = await _repository.FindByNameAsync(nombre);

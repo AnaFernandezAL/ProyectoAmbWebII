@@ -13,7 +13,6 @@ namespace proyecto.Infraestructure.Repository.Interfaces
         Task<Cartas?> FindByIdAsync(int id);
         Task<int> AddAsync(Cartas entity);
         Task UpdateAsync(Cartas entity);
-        Task DeleteAsync(int id);
 
         Task<ICollection<Cartas>> FindByNameAsync(string nombre);
         Task<ICollection<Cartas>> GetCartasByCategoria(int categoriaId);

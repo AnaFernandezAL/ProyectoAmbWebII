@@ -39,28 +39,135 @@ namespace proyecto.Infraestructure.Repository.Implementations
                     .ThenInclude(cc => cc.Categoria)
                 .Include(c => c.ImagenesCarta)
                 .Include(c => c.Subastas)
+                    .ThenInclude(s => s.EstadoSubasta)
                 .FirstOrDefaultAsync(c => c.CartaId == id);
         }
 
         public async Task<int> AddAsync(Cartas entity)
         {
-            _context.Cartas.Add(entity);
-            return await _context.SaveChangesAsync();
-        }
+            await ApplyCategoriasAsync(entity, entity.CartaCategoria?.Select(cc => cc.CategoriaId).ToArray());
 
+            _context.Cartas.Add(entity);
+            await _context.SaveChangesAsync();
+            return entity.CartaId;
+        }
         public async Task UpdateAsync(Cartas entity)
         {
-            _context.Cartas.Update(entity);
+            var carta = await _context.Cartas
+                .Include(c => c.CartaCategoria)
+                .Include(c => c.ImagenesCarta)
+                .FirstOrDefaultAsync(c => c.CartaId == entity.CartaId);
+
+            if (carta == null) throw new Exception("Carta no encontrada");
+
+            if (entity.EstadoCartaId > 0)
+            {
+                carta.EstadoCartaId = entity.EstadoCartaId;
+            }
+
+            carta.NombreCarta = entity.NombreCarta;
+            carta.Descripcion = entity.Descripcion;
+            carta.Condicion = entity.Condicion;
+            carta.Edicion = entity.Edicion;
+            carta.Rareza = entity.Rareza;
+
+            await ApplyCategoriasAsync(carta, entity.CartaCategoria?.Select(cc => cc.CategoriaId).ToArray());
+
+            if (entity.ImagenesCarta != null && entity.ImagenesCarta.Any())
+            {
+                _context.ImagenesCarta.RemoveRange(carta.ImagenesCarta);
+
+                carta.ImagenesCarta = new List<ImagenesCarta>();
+                foreach (var img in entity.ImagenesCarta)
+                {
+                    carta.ImagenesCarta.Add(new ImagenesCarta
+                    {
+                        Urlimagen = img.Urlimagen,
+                        EsPrincipal = img.EsPrincipal,
+                        CartaId = carta.CartaId
+                    });
+                }
+            }
+            else
+            {
+                if (entity.ImagenesCarta != null && entity.ImagenesCarta.Any())
+                {
+                    foreach (var img in carta.ImagenesCarta)
+                    {
+                        img.EsPrincipal = false;
+                    }
+
+                    foreach (var imgDto in entity.ImagenesCarta)
+                    {
+                        var img = carta.ImagenesCarta.FirstOrDefault(x => x.Urlimagen == imgDto.Urlimagen);
+                        if (img != null)
+                        {
+                            img.EsPrincipal = imgDto.EsPrincipal;
+                        }
+                    }
+                }
+            }
+
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+
+        private async Task ApplyCategoriasAsync(Cartas cartaToUpdate, int[]? selectedCategorias)
         {
-            var carta = await _context.Cartas.FindAsync(id);
-            if (carta != null)
+            if (selectedCategorias == null || selectedCategorias.Length == 0)
             {
-                _context.Cartas.Remove(carta);
-                await _context.SaveChangesAsync();
+                cartaToUpdate.CartaCategoria = new List<CartaCategoria>();
+                return;
+            }
+
+            var categorias = await _context.Categorias
+                .Where(c => selectedCategorias.Contains(c.CategoriaId))
+                .ToListAsync();
+
+            cartaToUpdate.CartaCategoria = categorias
+                .Select(c => new CartaCategoria
+                {
+                    CartaId = cartaToUpdate.CartaId,
+                    CategoriaId = c.CategoriaId
+                })
+                .ToList();
+        }
+
+        private async Task ApplyImagenesAsync(Cartas cartaToUpdate, ICollection<ImagenesCarta>? nuevasImagenes)
+        {
+            if (nuevasImagenes == null || !nuevasImagenes.Any())
+            {
+                return;
+            }
+
+            var existentes = await _context.ImagenesCarta
+                .Where(i => i.CartaId == cartaToUpdate.CartaId)
+                .ToListAsync();
+
+            var idsNuevos = nuevasImagenes.Select(i => i.ImagenId).ToHashSet();
+
+            var aEliminar = existentes.Where(e => !idsNuevos.Contains(e.ImagenId)).ToList();
+            _context.ImagenesCarta.RemoveRange(aEliminar);
+
+            var nuevasSinId = nuevasImagenes.Where(i => i.ImagenId == 0).ToList();
+            foreach (var img in nuevasSinId)
+            {
+                cartaToUpdate.ImagenesCarta.Add(new ImagenesCarta
+                {
+                    CartaId = cartaToUpdate.CartaId,
+                    Urlimagen = img.Urlimagen,
+                    EsPrincipal = img.EsPrincipal
+                });
+            }
+
+            foreach (var existente in existentes)
+            {
+                var nueva = nuevasImagenes.FirstOrDefault(i => i.ImagenId == existente.ImagenId);
+                if (nueva != null)
+                {
+                    existente.Urlimagen = nueva.Urlimagen;
+                    existente.EsPrincipal = nueva.EsPrincipal;
+                }
             }
         }
 

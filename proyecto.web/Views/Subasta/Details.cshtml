@@ -22,13 +22,14 @@
 
                     <p class="mb-2">
                         <b>Imagen:</b><br />
-                        @if (Model.Carta?.ImagenesCarta != null && Model.Carta.ImagenesCarta.Any())
+                        @if (Model.Carta?.ImagenesCartaNavigation != null && Model.Carta.ImagenesCartaNavigation.Any())
                         {
-                            <img src="@Model.Carta.ImagenesCarta.First().UrlImagen"
+                            <img src="@Model.Carta.ImagenesCartaNavigation.First().UrlImagen"
                                  alt="@Model.Carta.NombreCarta"
                                  class="img-thumbnail mt-2"
                                  style="max-height:200px;" />
                         }
+
                         else
                         {
                             <span class="text-muted">Sin imagen disponible</span>
