@@ -44,9 +44,15 @@ namespace proyecto.Application.Services.Implementations
 
         public async Task<int> AddAsync(CartaDTO dto)
         {
+            Console.WriteLine($"DTO EstadoCartaId: {dto.EstadoCartaId}");
+
             var entity = _mapper.Map<Cartas>(dto);
+
+            Console.WriteLine($"Entidad EstadoCartaId: {entity.EstadoCartaId}");
+
             return await _repository.AddAsync(entity);
         }
+
 
         public async Task UpdateAsync(int id, CartaDTO dto)
         {

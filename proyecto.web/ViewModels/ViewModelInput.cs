@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Libreria.Web.ViewModels
+namespace proyecto.web.ViewModels
 {
     public class ViewModelInput
     {
@@ -13,8 +13,6 @@ namespace Libreria.Web.ViewModels
         [Display(Name = "Cantidad")]
         public int? Cantidad { get; set; }
 
-        // El precio se muestra como referencia (readonly en interfaz)
-        // No se envía al controlador para cálculo de subtotal
         [Display(Name = "Precio")]
         public decimal? Precio { get; set; }
     }

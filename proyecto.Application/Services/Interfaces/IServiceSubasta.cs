@@ -12,16 +12,15 @@ namespace proyecto.Application.Services.Interfaces
     {
         Task<ICollection<SubastaDTO>> ListAsync();
         Task<SubastaDTO?> FindByIdAsync(int id);
-        Task<int> AddAsync(SubastaDTO dto);
+        Task<SubastaDTO?> AddAsync(SubastaDTO dto);
+
         Task UpdateAsync(int id, SubastaDTO dto);
         Task DeleteAsync(int id);
-
-        // Subastas activas
         Task<ICollection<SubastaDTO>> ListActivasAsync();
-        // Subastas finalizadas
         Task<ICollection<SubastaDTO>> ListFinalizadasAsync();
         Task<int> GetNextNumberOrden();
     }
+
 }
 
 

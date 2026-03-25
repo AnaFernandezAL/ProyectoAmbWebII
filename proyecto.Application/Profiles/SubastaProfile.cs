@@ -18,7 +18,10 @@ namespace proyecto.Application.Profiles
                 .ForMember(dest => dest.EstadoSubasta, opt => opt.MapFrom(src => src.EstadoSubasta))
                 .ForMember(dest => dest.Carta, opt => opt.MapFrom(src => src.Carta))
                 .ForMember(dest => dest.Vendedor, opt => opt.MapFrom(src => src.Vendedor))
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(dest => dest.Carta, opt => opt.Ignore())
+                .ForMember(dest => dest.Vendedor, opt => opt.Ignore())
+                .ForMember(dest => dest.EstadoSubasta, opt => opt.Ignore());
         }
     }
 }

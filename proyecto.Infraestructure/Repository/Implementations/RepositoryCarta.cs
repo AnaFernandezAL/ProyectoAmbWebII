@@ -174,12 +174,15 @@ namespace proyecto.Infraestructure.Repository.Implementations
         public async Task<ICollection<Cartas>> FindByNameAsync(string nombre)
         {
             return await _context.Cartas
-                .Where(c => c.NombreCarta.Contains(nombre))
+                .Where(c => c.NombreCarta.ToLower().Contains(nombre.ToLower())
+                 && c.EstadoCartaId == 1)
                 .Include(c => c.EstadoCarta)
                 .Include(c => c.Vendedor)
                 .Include(c => c.CartaCategoria)
                     .ThenInclude(cc => cc.Categoria)
+                .Include(c => c.ImagenesCarta)
                 .ToListAsync();
+        
         }
 
         public async Task<ICollection<Cartas>> GetCartasByCategoria(int categoriaId)

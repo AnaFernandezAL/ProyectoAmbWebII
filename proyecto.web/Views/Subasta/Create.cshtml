@@ -1,4 +1,4 @@
-﻿@using Libreria.Web.ViewModels
+﻿@using proyecto.web.ViewModels
 @model SubastaCreateViewModel
 
 @{
@@ -23,7 +23,7 @@
                 <button type="button"
                         class="btn btn-outline-secondary btn-sm"
                         onclick="clearForm()">
-                    Nueva subasta
+                    Nueva Subasta
                 </button>
             </div>
 
@@ -36,23 +36,32 @@
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
 
                         <div class="mb-3">
-                            <label asp-for="subasta.FechaInicio"></label>
-                            <input asp-for="subasta.FechaInicio" type="datetime-local" class="form-control form-control-sm" />
+                            <label asp-for="Subasta.FechaInicio"></label>
+                            <input asp-for="Subasta.FechaInicio"
+                                   type="datetime-local"
+                                   class="form-control form-control-sm"
+                                   value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"
+                                   min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="subasta.FechaCierre"></label>
-                            <input asp-for="subasta.FechaCierre" type="datetime-local" class="form-control form-control-sm" />
+                            <label asp-for="Subasta.FechaCierre"></label>
+                            <input asp-for="Subasta.FechaCierre"
+                                   type="datetime-local"
+                                   class="form-control form-control-sm"
+                                   value="@DateTime.Now.AddDays(7).ToString("yyyy-MM-ddTHH:mm")"
+                                   min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label asp-for="Subasta.PrecioBase"></label>
+                            <input asp-for="Subasta.PrecioBase" class="form-control form-control-sm" />
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="subasta.PrecioBase"></label>
-                            <input asp-for="subasta.PrecioBase" class="form-control form-control-sm" />
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="subasta.IncrementoMinimo"></label>
-                            <input asp-for="subasta.IncrementoMinimo" class="form-control form-control-sm" />
+                            <label asp-for="Subasta.IncrementoMinimo"></label>
+                            <input asp-for="Subasta.IncrementoMinimo" class="form-control form-control-sm" />
                         </div>
 
                         <!-- BOTÓN -->
@@ -78,7 +87,7 @@
                             <div class="card-body text-center">
 
                                 <!-- ID OCULTO -->
-                                <input type="hidden" asp-for="subasta.CartaId" id="CartaId" />
+                                <input type="hidden" asp-for="Subasta.CartaId" id="CartaId" />
 
                                 <!-- IMAGEN -->
                                 <img src="/Images/nophoto.jpg"
@@ -156,9 +165,9 @@
             });
         }
 
-        // ============================================
-        // GUARDAR SUBASTA
-        // ============================================
+                // ============================================================
+        //  GUARDAR Subasta (fetch POST + SweetAlert)
+        // ============================================================
         document.getElementById("createSubastaForm").addEventListener("submit", async function (e) {
             e.preventDefault();
 
@@ -166,9 +175,12 @@
             const token = getToken();
             const formData = new FormData(form);
 
-            // Validación básica
             if (!$("#CartaId").val()) {
-                Swal.fire("Error", "Debe seleccionar una carta", "error");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Debe seleccionar una carta'
+                });
                 return;
             }
 
@@ -181,31 +193,48 @@
 
                 if (!response.ok) {
                     const errorText = await response.text();
-                    Swal.fire("Error", errorText, "error");
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al guardar',
+                        text: errorText
+                    });
                     return;
                 }
 
                 const result = await response.json();
 
-                if (result.success) {
+                if (result.success && result.redirectUrl) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Subasta creada',
+                        text: 'La Subasta se creó correctamente.',
                         timer: 1200,
                         showConfirmButton: false
                     }).then(() => {
                         window.location.href = result.redirectUrl;
                     });
                 }
+                else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Guardado parcial',
+                        text: 'La Subasta se creó pero no se obtuvo redirección.'
+                    });
+                }
 
             } catch (error) {
-                Swal.fire("Error", error.message, "error");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error inesperado',
+                    text: error.message
+                });
             }
         });
 
-        // ============================================
-        // RECIBIR CARTA DEL MODAL
-        // ============================================
+        // ============================================================
+        //  AGREGAR Carta AL Subasta
+        // ============================================================
         function seleccionarCarta(id, nombre, descripcion, imagen) {
 
             $("#CartaId").val(id);
@@ -213,13 +242,110 @@
             $("#CartaDescripcion").html(descripcion ?? "Sin descripción");
 
             if (imagen) {
-                $("#CartaImagen").attr("src", "data:image/jpeg;base64," + imagen);
+                $("#CartaImagen").attr("src", imagen);
             } else {
                 $("#CartaImagen").attr("src", "/Images/nophoto.jpg");
             }
 
             $("#modalCartas").modal('hide');
         }
+
+        function confirmarCarta() {
+
+            const input = $("#CartaIdSeleccionada");
+            const id = input.val();
+
+            if (!id) {
+                Swal.fire("Error", "Debe seleccionar una carta", "error");
+                return;
+            }
+
+            const nombre = input.data("nombre");
+            const descripcion = input.data("descripcion");
+            const imagen = input.data("imagen");
+
+            seleccionarCarta(id, nombre, descripcion, imagen);
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalCartas'));
+            modal.hide();
+
+            Swal.fire({
+                icon: "success",
+                title: "Carta agregada",
+                timer: 800,
+                showConfirmButton: false
+            });
+        }
+
+
+        // ============================================================
+        //  AUTOCOMPLETE Carta
+        // ============================================================
+                $(document).ready(function () {
+
+            function activarAutocomplete() {
+
+                const input = $("#NombreCartaModal");
+
+
+                console.log("ACTIVANDO AUTOCOMPLETE");
+
+                input.autocomplete({
+                    minLength: 1,
+
+                    source: function (request, response) {
+
+
+                        $.ajax({
+                            url: '@Url.Action("GetCartaByName", "Carta")',
+                            data: { filtro: request.term },
+
+                            success: function (data) {
+
+                                console.log("DATA:", data);
+
+                                response($.map(data, function (item) {
+                                    return {
+                                        label: item.nombre,
+                                        value: item.nombre,
+                                        data: item
+                                    };
+                                }));
+                            }
+                        });
+                    },
+
+                    select: function (event, ui) {
+
+                        const carta = ui.item.data;
+
+                        $("#CartaIdSeleccionada").val(carta.cartaId);
+
+                        // 🔥 GUARDAR IMAGEN REAL
+                        $("#CartaIdSeleccionada").data("imagen", carta.imagen);
+                        $("#CartaIdSeleccionada").data("nombre", carta.nombre);
+                        $("#CartaIdSeleccionada").data("descripcion", carta.descripcion);
+
+                        $("#CartaSelect").html("Carta: " + carta.nombre);
+                        $("#DescripcionSelect").html("Descripción: " + (carta.descripcion ?? "Sin descripción"));
+                        $("#EstadoCartaSelect").html("Estado: " + (carta.estado ?? "Disponible"));
+
+                        if (carta.imagen) {
+                            $("#ImgCarta").attr("src", carta.imagen);
+                        }
+
+                        return false;
+                    }
+                });
+            }
+            activarAutocomplete();
+
+            $(document).on("shown.bs.modal", "#modalCartas", function () {
+                activarAutocomplete();
+            });
+
+        });
+
 
     </script>
 }

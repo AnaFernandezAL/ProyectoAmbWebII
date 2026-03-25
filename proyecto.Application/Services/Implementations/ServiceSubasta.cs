@@ -52,16 +52,36 @@ namespace proyecto.Application.Services.Implementations
             return dto;
         }
 
-        public async Task<int> AddAsync(SubastaDTO dto)
+        public async Task<SubastaDTO?> AddAsync(SubastaDTO dto)
         {
             var entity = _mapper.Map<Subastas>(dto);
-            return await _repository.AddAsync(entity);
+            await _repository.AddAsync(entity);
+
+            var subastaGuardada = await _repository.FindByIdAsync(entity.SubastaId);
+
+            if (subastaGuardada == null) return null;
+
+            var dtoResult = _mapper.Map<SubastaDTO>(subastaGuardada);
+            return dtoResult;
         }
+
 
         public async Task UpdateAsync(int id, SubastaDTO dto)
         {
-            var entity = _mapper.Map<Subastas>(dto);
-            entity.SubastaId = id;
+            var entity = await _repository.FindByIdAsync(id);
+            if (entity == null) throw new Exception("Subasta no encontrada");
+
+            if (entity.FechaInicio <= DateTime.Now)
+                throw new Exception("No se puede editar una subasta que ya inició");
+
+            if (entity.Pujas != null && entity.Pujas.Count > 0)
+                throw new Exception("No se puede editar una subasta con pujas");
+
+            entity.FechaInicio = dto.FechaInicio;
+            entity.FechaCierre = dto.FechaCierre;
+            entity.PrecioBase = dto.PrecioBase;
+            entity.IncrementoMinimo = dto.IncrementoMinimo;
+
             await _repository.UpdateAsync(entity);
         }
 

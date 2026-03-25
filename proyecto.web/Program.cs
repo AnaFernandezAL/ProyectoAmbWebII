@@ -62,7 +62,7 @@ builder.Services.AddSession(options =>
     // Opciones de la cookie de sesión
     options.Cookie.HttpOnly = true;          // No accesible desde JS
     options.Cookie.IsEssential = true;       // Necesaria aunque haya consentimiento de cookies
-    options.Cookie.Name = ".Libreria.Session";
+    options.Cookie.Name = ".proyecto.Session";
 });
 
 // =======================
@@ -130,10 +130,11 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 else
@@ -142,22 +143,26 @@ else
     app.UseMiddleware<ErrorHandlingMiddleware>();
 }
 
+
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
+
+// Session DEBE ir antes de MapControllerRoute / MapDefaultControllerRoute
+app.UseSession();
+
+app.UseSerilogRequestLogging();
 
 app.UseAuthorization();
 
-// Activar soporte a la solicitud de registro con Serilog
-app.UseSerilogRequestLogging();
-
 app.MapStaticAssets();
+
+app.UseAntiforgery();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-// Activar protección antifalsificación
-app.UseAntiforgery();
 
 app.Run();

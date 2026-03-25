@@ -167,12 +167,10 @@ namespace proyecto.Web.Controllers
                 return View(dto);
             }
 
-            // Actualizar categorías
             dto.CartaCategoria = categoriasSeleccionadas
                 .Select(c => new CartaCategoriaDTO { CategoriaId = c })
                 .ToList();
 
-            // Caso 1: nuevas imágenes
             if (dto.ImagenesCarta != null && dto.ImagenesCarta.Count > 0)
             {
                 dto.ImagenesCartaNavigation = new List<ImagenCartaDTO>();
@@ -196,13 +194,12 @@ namespace proyecto.Web.Controllers
                     dto.ImagenesCartaNavigation.Add(new ImagenCartaDTO
                     {
                         UrlImagen = "/Images/" + fileName,
-                        EsPrincipal = (i == dto.ImagenPrincipalIndex) // principal según radio
+                        EsPrincipal = (i == dto.ImagenPrincipalIndex)
                     });
                 }
             }
             else
             {
-                // Caso 2: no hay nuevas imágenes, solo cambio de principal
                 if (dto.ImagenesCartaNavigation != null && dto.ImagenesCartaNavigation.Any())
                 {
                     int index = 0;
@@ -245,6 +242,36 @@ namespace proyecto.Web.Controllers
             );
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCartaByName(string filtro)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(filtro))
+                {
+                    return Json(new List<object>());
+                }
+
+                var cartas = await _serviceCarta.FindByNameAsync(filtro);
+
+                var result = cartas.Select(c => new
+                {
+                    cartaId = c.CartaId,
+                    nombre = c.NombreCarta,
+                    descripcion = c.Descripcion,
+                    estado = c.EstadoCarta!.NombreEstado,
+                    imagen = c.ImagenesCartaNavigation
+                                .FirstOrDefault(i => i.EsPrincipal)?.UrlImagen
+                });
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
     }
 }

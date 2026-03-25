@@ -20,9 +20,10 @@ namespace proyecto.Application.Profiles
                 .ForMember(dest => dest.FechaRegistro, opt => opt.MapFrom(src => src.FechaRegistro))
                 .ForMember(dest => dest.Edicion, opt => opt.MapFrom(src => src.Edicion))
                 .ForMember(dest => dest.Rareza, opt => opt.MapFrom(src => src.Rareza))
+                .ForMember(dest => dest.EstadoCartaId, opt => opt.MapFrom(src => src.EstadoCartaId)) 
                 .ForMember(dest => dest.EstadoCarta, opt => opt.MapFrom(src => src.EstadoCarta))
                 .ForMember(dest => dest.VendedorId, opt => opt.MapFrom(src => src.VendedorId))
-                .ForMember(dest => dest.Vendedor, opt => opt.MapFrom(src => src.Vendedor)) // ahora sí se mapea
+                .ForMember(dest => dest.Vendedor, opt => opt.MapFrom(src => src.Vendedor))
                 .ForMember(dest => dest.CartaCategoria, opt => opt.MapFrom(src => src.CartaCategoria))
                 .ForMember(dest => dest.ImagenesCartaNavigation, opt => opt.MapFrom(src => src.ImagenesCarta))
                 .ForMember(dest => dest.Subastas, opt => opt.MapFrom(src => src.Subastas))

@@ -3,7 +3,8 @@ using proyecto.Application.DTOs;
 using proyecto.Application.Services.Implementations;
 using proyecto.Application.Services.Interfaces;
 using proyecto.Infraestructure.Models;
-using proyecto.web.Models;
+using proyecto.web.Util;
+using proyecto.web.ViewModels;
 using System.Threading.Tasks;
 using X.PagedList;
 using X.PagedList.Extensions;
@@ -16,11 +17,11 @@ namespace proyecto.Web.Controllers
         private readonly IServiceUsuario _serviceUsuario;
         private readonly IServiceCarta _serviceCarta;
 
-        // Clave única para almacenar el carrito en Session
         private const string CartSessionKey = "CartShopping";
 
-        public SubastaController(IServiceSubasta serviceSubasta)
+        public SubastaController(IServiceCarta serviceCarta, IServiceSubasta serviceSubasta)
         {
+            _serviceCarta = serviceCarta;
             _serviceSubasta = serviceSubasta;
         }
 
@@ -78,11 +79,9 @@ namespace proyecto.Web.Controllers
 
             var vm = new SubastaCreateViewModel
             {
-                subasta = new SubastaDTO
+                Subasta = new SubastaCreateDTO
                 {
-                    SubastaId = nextReceiptNumber
-                },
-                NombreCliente = "-"
+                }
             };
 
             return View(vm);
@@ -92,61 +91,48 @@ namespace proyecto.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SubastaCreateViewModel vm)
         {
-            try
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (vm?.Subasta == null)
+                return BadRequest("Datos no recibidos correctamente");
+
+            var dto = vm.Subasta;
+
+            if (dto.CartaId == 0)
+                return BadRequest("Debe seleccionar una carta");
+
+            if (dto.FechaInicio < DateTime.Now)
+                return BadRequest("La fecha de inicio debe ser mayor o igual a la fecha actual");
+
+            if (dto.FechaCierre <= dto.FechaInicio)
+                return BadRequest("La fecha de cierre debe ser posterior a la fecha de inicio");
+
+            var carta = await _serviceCarta.FindByIdAsync(dto.CartaId);
+            if (carta is null)
+                return BadRequest("La carta no existe");
+
+            var subasta = new SubastaDTO
             {
-                // Validar modelo básico
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest("Los datos de la orden no son válidos. Verifique el cliente y la información general.");
-                }
+                CartaId = dto.CartaId,
+                FechaInicio = dto.FechaInicio,
+                FechaCierre = dto.FechaCierre,
+                PrecioBase = dto.PrecioBase,
+                IncrementoMinimo = dto.IncrementoMinimo,
+                EstadoSubastaId = 1,
+                VendedorId = 1
+            };
 
+            var subastaCreada = await _serviceSubasta.AddAsync(subasta);
 
-
-                // Validar que el cliente exista
-                var vendedor = await _serviceUsuario.FindByIdAsync(vm.subasta.Vendedor.UsuarioId);
-                if (vendedor is null)
-                {
-                    return BadRequest("El vendedor indicado no existe.");
-                }
-
-                var carta = await _serviceCarta.FindByIdAsync(vm.subasta.Carta.CartaId);
-                if (carta is null)
-                {
-                    return BadRequest("La carta indicada no existe.");
-                }
-
-                // Completar y validar algunos datos de la subasta 
-                var subasta = vm.subasta;
-
-                if (subasta.Carta is null || subasta.EstadoSubasta is null || subasta.Vendedor is null)
-                {
-                    return BadRequest("Faltan datos obligatorios.");
-                }
-
-                subasta.SubastaId = 0;
-                subasta.FechaInicio = subasta.FechaInicio;
-                subasta.FechaCierre = subasta.FechaCierre;
-                subasta.PrecioBase = subasta.PrecioBase;
-                subasta.IncrementoMinimo = subasta.IncrementoMinimo;
-                subasta.EstadoSubastaId = 1;
-                subasta.CartaId = subasta.Carta.CartaId;
-                subasta.VendedorId = 1;
-
-                await _serviceSubasta.AddAsync(subasta);
-
-                // Respuesta JSON para que el JS de la vista redireccione amigablemente
-                return Json(new
-                {
-                    success = true,
-                    redirectUrl = Url.Action(nameof(Index))
-                });
-            }
-            catch (Exception ex)
+            return Json(new
             {
-                // registrar el error (logging).
-                return BadRequest($"Error al guardar la orden: {ex.Message}");
-            }
+                success = true,
+                redirectUrl = Url.Action(nameof(Index)),
+                estado = subastaCreada?.EstadoSubasta?.NombreEstado 
+            });
         }
+
 
         public async Task<IActionResult> Edit(int id)
         {
@@ -162,12 +148,30 @@ namespace proyecto.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, SubastaDTO dto)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(dto);
+
+            try
             {
                 await _serviceSubasta.UpdateAsync(id, dto);
+
+                TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
+                    "Subasta editada correctamente",
+                    $"La subasta {id} fue actualizada exitosamente.",
+                    SweetAlertMessageType.success
+                );
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(dto);
+            catch (Exception ex)
+            {
+                TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
+                    "Error al editar",
+                    ex.Message,
+                    SweetAlertMessageType.error
+                );
+                return View(dto);
+            }
         }
 
         public async Task<IActionResult> Delete(int id)

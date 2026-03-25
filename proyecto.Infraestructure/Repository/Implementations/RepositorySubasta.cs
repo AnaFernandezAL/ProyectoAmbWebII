@@ -56,7 +56,24 @@ namespace proyecto.Infraestructure.Repository.Implementations
 
         public async Task UpdateAsync(Subastas entity)
         {
-            _context.Subastas.Update(entity);
+            var subasta = await _context.Subastas
+                .Include(s => s.Pujas)
+                .FirstOrDefaultAsync(s => s.SubastaId == entity.SubastaId);
+
+            if (subasta == null)
+                throw new Exception("Subasta no encontrada");
+
+            if (subasta.FechaInicio <= DateTime.Now)
+                throw new Exception("No se puede editar una subasta que ya inició");
+
+            if (subasta.Pujas != null && subasta.Pujas.Count > 0)
+                throw new Exception("No se puede editar una subasta con pujas");
+
+            subasta.FechaInicio = entity.FechaInicio;
+            subasta.FechaCierre = entity.FechaCierre;
+            subasta.PrecioBase = entity.PrecioBase;
+            subasta.IncrementoMinimo = entity.IncrementoMinimo;
+
             await _context.SaveChangesAsync();
         }
 

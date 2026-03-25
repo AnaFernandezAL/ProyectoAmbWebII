@@ -46,15 +46,12 @@ namespace proyecto.Application.DTOs
         public decimal? MontoActual { get; set; }
 
         [DisplayName("Estado")]
-        [Required(ErrorMessage = "{0} es requerido")]
         public EstadoSubastaDTO EstadoSubasta { get; set; } = new();
 
         [DisplayName("Carta Subastada")]
-        [Required(ErrorMessage = "{0} es requerido")]
         public CartaDTO Carta { get; set; } = new();
 
         [DisplayName("Vendedor")]
-        [Required(ErrorMessage = "{0} es requerido")]
         public UsuarioDTO Vendedor { get; set; } = new();
 
         // Campo calculado
